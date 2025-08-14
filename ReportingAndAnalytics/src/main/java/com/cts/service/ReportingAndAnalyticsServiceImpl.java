@@ -17,7 +17,7 @@ import com.cts.model.SupplierReport;
 import com.cts.model.SupplierReportSent;
 
 @Service
-public abstract class ReportingAndAnalyticsServiceImpl implements ReportingAndAnalyticsService  {
+public class ReportingAndAnalyticsServiceImpl implements ReportingAndAnalyticsService  {
 
 	private OrderManagementClient oClient;
 	private SupplierManagementClient sClient;
