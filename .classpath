@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="APIGateway/src/main/java"/>
+	<classpathentry kind="src" path="APIGateway/src/test/java"/>
+	<classpathentry kind="src" path="ConfigServer/src/main/java"/>
+	<classpathentry kind="src" path="ConfigServer/src/test/java"/>
+	<classpathentry kind="src" path="EurekaServer/src/main/java"/>
+	<classpathentry kind="src" path="EurekaServer/src/test/java"/>
+	<classpathentry kind="src" path="OrderManagement/src/main/java"/>
+	<classpathentry kind="src" path="OrderManagement/src/test/java"/>
+	<classpathentry kind="src" path="ProductManagement/src/main/java"/>
+	<classpathentry kind="src" path="ProductManagement/src/test/java"/>
+	<classpathentry kind="src" path="ReportingAndAnalytics/src/main/java"/>
+	<classpathentry kind="src" path="ReportingAndAnalytics/src/test/java"/>
+	<classpathentry kind="src" path="StockManagement/src/main/java"/>
+	<classpathentry kind="src" path="StockManagement/src/test/java"/>
+	<classpathentry kind="src" path="SupplierManagement/src/main/java"/>
+	<classpathentry kind="src" path="SupplierManagement/src/test/java"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
