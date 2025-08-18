@@ -2,7 +2,7 @@ package com.cts.model;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.annotation.CreatedDate;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -87,8 +87,7 @@ public class Supplier {
 	@Min(value = 1)
 	private int quantity;
 
-	@NotNull
-	// @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@CreatedDate
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+
 	private LocalDateTime date;
 }
