@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SupplierReportSent {
 	private String name;
-	private String productSupplied;
+	private String productsSupplied;
 	private LocalDateTime date;
 	
 

@@ -76,7 +76,7 @@ public class SupplierManagementController {
 	 * @throws ReportNotFound if no suppliers are found within the specified date
 	 *                        range.
 	 */
-	@GetMapping("supplierInfoByDateForReport") // http://localhost:1111/supplier/supplierInfoByIdForReport
+	@PostMapping("supplierInfoByDateForReport") // http://localhost:8082/supplier/supplierInfoByIdForReport
 	public List<SupplierReportSent> getSupplierInfoForReport(@RequestBody SupplierReport report) throws ReportNotFound {
 		// Note: The endpoint path is corrected from the user's comment to a more
 		// logical path.

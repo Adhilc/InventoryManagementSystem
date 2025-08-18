@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SupplierReport {
-	private LocalDateTime s_startDate;
-	private LocalDateTime s_endDate;
+	private LocalDateTime startDate;
+	private LocalDateTime endDate;
 }
