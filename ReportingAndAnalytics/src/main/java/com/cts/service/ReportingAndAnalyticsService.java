@@ -15,7 +15,7 @@ public interface ReportingAndAnalyticsService {
 
 	ResponseEntity<List<OrderReportSent>> getDetailsByDate(OrderReport orderReport);
 
-	List<SupplierReportSent> getSupplierDetailsByDate(SupplierReport supplierReport);
+	ResponseEntity<List<SupplierReportSent>> getSupplierDetailsByDate(SupplierReport supplierReport);
 
 	ResponseEntity<List<StockDTO>> getTheLowerStocks();
 

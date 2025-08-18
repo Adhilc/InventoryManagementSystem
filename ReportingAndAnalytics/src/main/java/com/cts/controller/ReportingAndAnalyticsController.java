@@ -17,11 +17,15 @@ import com.cts.model.SupplierReport;
 import com.cts.model.SupplierReportSent;
 import com.cts.service.ReportingAndAnalyticsService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping("/api/report")
+@Slf4j
 public class ReportingAndAnalyticsController {
 
 	private ReportingAndAnalyticsService service;
+	
 	public ReportingAndAnalyticsController(ReportingAndAnalyticsService service) {
 		this.service=service;
 	}
@@ -34,11 +38,11 @@ public class ReportingAndAnalyticsController {
 		return service.getDetailsByDate(orderReport);
 	}
 	@GetMapping("/getByDate/supplier/{startDate}/{endDate}")
-	public List<SupplierReportSent> getSupplierDetailsByDate(@PathVariable LocalDateTime startDate,@PathVariable LocalDateTime endDate){
-		
+	public ResponseEntity<List<SupplierReportSent>> getSupplierDetailsByDate(@PathVariable LocalDateTime startDate,@PathVariable LocalDateTime endDate){
+			log.info("Start Date: "+startDate+" End Date :"+endDate);
 		SupplierReport supplierReport=new SupplierReport();
-		supplierReport.setS_startDate(startDate);
-		supplierReport.setS_endDate(endDate);
+		supplierReport.setStartDate(startDate);
+		supplierReport.setEndDate(endDate);
 		return service.getSupplierDetailsByDate(supplierReport);
 	}
 	
