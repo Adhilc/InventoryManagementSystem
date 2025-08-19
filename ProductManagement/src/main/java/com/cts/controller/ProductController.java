@@ -166,5 +166,7 @@ public class ProductController {
 	public String updateQuantity(@RequestBody QuantityDTO quantityDTO) {
 		return service.updateQuantity(quantityDTO);
 	}
+	
+	
 
 }
