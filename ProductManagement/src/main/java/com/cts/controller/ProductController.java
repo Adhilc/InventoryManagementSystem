@@ -171,7 +171,7 @@ public class ProductController {
 		return service.updateQuantity(quantityDTO);
 	}
 	
-	@GetMapping("/checkProductId")
+	@PostMapping("/checkProductId")
 	public int checkProductId(@RequestParam int id)
 	{
 		return service.checkProductId(id);

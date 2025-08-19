@@ -56,7 +56,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
 		
 		int result=pClient.checkProductId(product.getProductId());
 		if(result==-1) {
-			return new ResponseEntity<>("Not Saved succesfully",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("Not Saved succesfully",HttpStatus.BAD_GATEWAY);
 		}
 		
 		ProductDTO productDto=new ProductDTO(product.getProductId(),product.getQuantity());
