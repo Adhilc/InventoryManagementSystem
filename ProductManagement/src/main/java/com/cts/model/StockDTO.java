@@ -29,7 +29,7 @@ public class StockDTO {
 	/**
 	 * The name of the product.
 	 */
-	private int reorderLevel;
+	private String name;
 
 	/**
 	 * The current quantity of the product in stock.

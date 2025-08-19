@@ -34,6 +34,9 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	ProductRepository repo;
 
+	@Autowired
+	StockManagementClient sClient;
+
 	/**
 	 * {@inheritDoc}
 	 * <p>
@@ -43,16 +46,15 @@ public class ProductServiceImpl implements ProductService {
 	 */
 	@Override
 	public Product saveProduct(Product product) throws MethodArgumentNotValidException {
-		Product pr1 =repo.save(product);
 		StockDTO stockDto = new StockDTO();
-        stockDto.setProductID(pr1.getProductID());
-        stockDto.setQuantity(pr1.getStockLevel());
-        stockDto.setReorderLevel(pr1.getStockLevel());
+		stockDto.setName(product.getName());
+		stockDto.setProductID(product.getProductID());
+		stockDto.setQuantity(product.getStockLevel());
 
-        // Call the stock management microservice to create the stock entry
-        StockManagementClient.createStock(stockDto);
+		// Call the stock management microservice to create the stock entry
+		sClient.save(stockDto);
 
-        return pr1;
+		return repo.save(product);
 	}
 
 	/**
@@ -204,12 +206,12 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public int checkProductId(int id) {
-		
-		boolean result=repo.existsById(id);
-		if(result) {
-			Product pro=repo.findByProductID(id);
+
+		boolean result = repo.existsById(id);
+		if (result) {
+			Product pro = repo.findByProductID(id);
 			return pro.getStockLevel();
 		}
-		 return -1;
+		return -1;
 	}
 }

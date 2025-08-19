@@ -47,11 +47,11 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	 */
 	List<Product> findByPriceBetween(int initial, int fina);
 
-	@Query("SELECT new com.cts.model.StockDTO(p.productID, p.stockLevel, p.stockLevel) FROM Product p")
+	@Query("SELECT new com.cts.model.StockDTO(p.productID, p.name , p.stockLevel) FROM Product p")
 	List<StockDTO> getAllStocks();
 	
 	
-	@Query("SELECT new com.cts.model.StockDTO(p.productID, p.stockLevel, p.stockLevel) FROM Product p")
+	@Query("SELECT new com.cts.model.StockDTO(p.productID, p.name, p.stockLevel) FROM Product p")
 	List<ProductDTO> getAllProductQuantity();
 
 	Product findByProductID(int productID);
