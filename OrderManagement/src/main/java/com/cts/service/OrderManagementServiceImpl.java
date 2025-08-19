@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.cts.client.ProductManagementClient;
 import com.cts.client.StockManagementClient;
 import com.cts.exception.DataNotFoundException;
 import com.cts.exception.DateNotFoundException;
@@ -29,9 +30,11 @@ public class OrderManagementServiceImpl implements OrderManagementService {
 
 	private OrderManagementRepository repo;
 	private StockManagementClient sClient;
-	public OrderManagementServiceImpl(OrderManagementRepository repo,StockManagementClient sClient) {
+	private ProductManagementClient pClient;
+	public OrderManagementServiceImpl(OrderManagementRepository repo,StockManagementClient sClient,ProductManagementClient pClient) {
 		this.repo=repo;
 		this.sClient=sClient;
+		this.pClient=pClient;
 	}
 	
 	private static final AtomicInteger customerIdCounter=new AtomicInteger(0);
@@ -50,6 +53,11 @@ public class OrderManagementServiceImpl implements OrderManagementService {
 		order.setStatus("Pending");
 		order.setQuantity(product.getQuantity());
 		order.setCustomerId(customerIdCounter.getAndIncrement());
+		
+		int result=pClient.checkProductId(product.getProductId());
+		if(result==-1) {
+			return new ResponseEntity<>("Not Saved succesfully",HttpStatus.BAD_REQUEST);
+		}
 		
 		ProductDTO productDto=new ProductDTO(product.getProductId(),product.getQuantity());
 		
