@@ -11,13 +11,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cts.client.StockManagementClient;
 import com.cts.exception.ProductNotFound;
-import com.cts.model.OverAllStock;
 import com.cts.model.Product;
 import com.cts.model.ProductDTO;
 import com.cts.model.QuantityDTO;
+import com.cts.model.StockDTO;
 import com.cts.service.ProductService;
 
 import jakarta.validation.Valid;
@@ -40,6 +42,8 @@ public class ProductController {
 	 */
 	@Autowired
 	ProductService service;
+	@Autowired
+	StockManagementClient stockManagementClient;
 
 	/**
 	 * Handles POST requests to add a new product to the system. The {@code @Valid}
@@ -52,7 +56,7 @@ public class ProductController {
 	 *                                         validation.
 	 */
 	@PostMapping("/add")
-	public String saveProduct(@Valid @RequestBody Product product) throws MethodArgumentNotValidException {
+	public Product saveProduct(@Valid @RequestBody Product product) throws MethodArgumentNotValidException {
 		return service.saveProduct(product);
 	}
 
@@ -64,7 +68,7 @@ public class ProductController {
 	 *         details.
 	 */
 	@GetMapping("/getAll")
-	public List<OverAllStock> getAllProductsStocks() {
+	public List<StockDTO> getAllProductsStocks() {
 		return service.getAllStocks();
 	}
 
@@ -167,6 +171,10 @@ public class ProductController {
 		return service.updateQuantity(quantityDTO);
 	}
 	
-	
+	@GetMapping("/checkProductId")
+	public int checkProductId(@RequestParam int id)
+	{
+		return service.checkProductId(id);
+	}
 
 }

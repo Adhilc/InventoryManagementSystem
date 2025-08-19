@@ -7,11 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import com.cts.client.StockManagementClient;
 import com.cts.exception.ProductNotFound;
-import com.cts.model.OverAllStock;
 import com.cts.model.Product;
 import com.cts.model.ProductDTO;
 import com.cts.model.QuantityDTO;
+import com.cts.model.StockDTO;
 import com.cts.repository.ProductRepository;
 
 /**
@@ -41,9 +42,17 @@ public class ProductServiceImpl implements ProductService {
 	 * </p>
 	 */
 	@Override
-	public String saveProduct(Product product) throws MethodArgumentNotValidException {
-		repo.save(product);
-		return "Product Saved Successfully";
+	public Product saveProduct(Product product) throws MethodArgumentNotValidException {
+		Product pr1 =repo.save(product);
+		StockDTO stockDto = new StockDTO();
+        stockDto.setProductID(pr1.getProductID());
+        stockDto.setQuantity(pr1.getStockLevel());
+        stockDto.setReorderLevel(pr1.getStockLevel());
+
+        // Call the stock management microservice to create the stock entry
+        StockManagementClient.createStock(stockDto);
+
+        return pr1;
 	}
 
 	/**
@@ -156,8 +165,8 @@ public class ProductServiceImpl implements ProductService {
 	 * </p>
 	 */
 	@Override
-	public List<OverAllStock> getAllStocks() {
-		List<OverAllStock> pr = repo.getAllStocks();
+	public List<StockDTO> getAllStocks() {
+		List<StockDTO> pr = repo.getAllStocks();
 		return pr;
 
 	}
@@ -191,5 +200,16 @@ public class ProductServiceImpl implements ProductService {
 		product.setStockLevel(quantityDTO.getQuantity());
 		repo.save(product);
 		return "Successfully updated quantity";
+	}
+
+	@Override
+	public int checkProductId(int id) {
+		
+		boolean result=repo.existsById(id);
+		if(result) {
+			Product pro=repo.findByProductID(id);
+			return pro.getStockLevel();
+		}
+		 return -1;
 	}
 }

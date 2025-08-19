@@ -20,10 +20,10 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.cts.exception.ProductNotFound;
-import com.cts.model.OverAllStock;
 import com.cts.model.Product;
 import com.cts.model.ProductDTO;
 import com.cts.model.QuantityDTO;
+import com.cts.model.StockDTO;
 import com.cts.repository.ProductRepository;
 import com.cts.service.ProductServiceImpl;
 
@@ -45,7 +45,7 @@ class UserServiceTest {
 		Product product = new Product(1, "Rice", "Cerial", 43, 50);
 		when(productRepository.save(product)).thenReturn(null);
 
-		String result = service.saveProduct(product);
+		Product result = service.saveProduct(product);
 
 		assertEquals(result, "Product Saved Successfully");
 	}
@@ -210,15 +210,15 @@ class UserServiceTest {
 	@Test
 	void getAllStocks_shouldReturnAllOverallStocks() {
 		// Arrange
-		List<OverAllStock> stocks = Arrays.asList(new OverAllStock(1, "Prod1", 10), new OverAllStock(2, "Prod2", 0));
+		List<StockDTO> stocks = Arrays.asList(new StockDTO(), new StockDTO());
 		when(productRepository.getAllStocks()).thenReturn(stocks);
 
 		// Act
-		List<OverAllStock> result = service.getAllStocks();
+		List<StockDTO> result = service.getAllStocks();
 
 		// Assert
 		assertEquals(2, result.size());
-		assertEquals("Prod1", result.get(0).getName());
+		assertEquals("Prod1", result.get(0).getProductID());
 		verify(productRepository, times(1)).getAllStocks();
 	}
 

@@ -39,7 +39,7 @@ public class ProductManagementApplicationTests {
 	@Order(1)
 	void testAddProduct1() throws MethodArgumentNotValidException {
 		Product product = new Product(1, "Rice", "Cerial", 43, 50);
-		String result = productService.saveProduct(product);
+		Product result = productService.saveProduct(product);
 		assertEquals("Product Saved Successfully", result);
 	}
 
@@ -47,7 +47,7 @@ public class ProductManagementApplicationTests {
 	@Order(2)
 	void testAddProduct2() throws MethodArgumentNotValidException {
 		Product product = new Product(2, "Phone", "Cerial", 43000, 43);
-		String result = productService.saveProduct(product);
+		Product result = productService.saveProduct(product);
 		assertEquals("Product Saved Successfully", result);
 	}
 

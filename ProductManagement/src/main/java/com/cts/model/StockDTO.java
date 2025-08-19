@@ -15,10 +15,11 @@ import lombok.NoArgsConstructor;
  * setters.
  * </p>
  */
-@NoArgsConstructor
-@AllArgsConstructor
+
 @Data
-public class OverAllStock {
+@AllArgsConstructor
+@NoArgsConstructor
+public class StockDTO {
 
 	/**
 	 * The unique identifier of the product.
@@ -28,7 +29,7 @@ public class OverAllStock {
 	/**
 	 * The name of the product.
 	 */
-	private String name;
+	private int reorderLevel;
 
 	/**
 	 * The current quantity of the product in stock.

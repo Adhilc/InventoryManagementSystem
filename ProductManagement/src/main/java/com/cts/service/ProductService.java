@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.cts.exception.ProductNotFound;
-import com.cts.model.OverAllStock;
 import com.cts.model.Product;
 import com.cts.model.ProductDTO;
 import com.cts.model.QuantityDTO;
+import com.cts.model.StockDTO;
 
 /**
  * Defines the contract for the business logic layer for product-related
@@ -28,9 +28,9 @@ public interface ProductService {
 	 * @param product The {@link Product} object to be created and saved.
 	 * @return A confirmation message indicating the result of the operation.
 	 * @throws MethodArgumentNotValidException if the provided product object is
-	 * invalid.
+	 *                                         invalid.
 	 */
-	public String saveProduct(Product product) throws MethodArgumentNotValidException;
+	public Product saveProduct(Product product) throws MethodArgumentNotValidException;
 
 	/**
 	 * Updates the details of an existing product.
@@ -38,9 +38,9 @@ public interface ProductService {
 	 * @param product The {@link Product} object containing the updated information.
 	 * @return A confirmation message indicating the result of the operation.
 	 * @throws MethodArgumentNotValidException if the provided product object is
-	 * invalid.
+	 *                                         invalid.
 	 * @throws ProductNotFound                 if the product to be updated is not
-	 * found.
+	 *                                         found.
 	 */
 	public String updateProduct(Product product) throws MethodArgumentNotValidException, ProductNotFound;
 
@@ -78,8 +78,8 @@ public interface ProductService {
 	public List<Product> getProductsBetweenPriceRange(int initial, int fina);
 
 	/**
-	 * Retrieves the name of a product by its ID.
-	 * * @param id The ID of the product.
+	 * Retrieves the name of a product by its ID. * @param id The ID of the product.
+	 * 
 	 * @return The name of the product as a String.
 	 * @throws ProductNotFound if no product with the specified ID is found.
 	 */
@@ -89,9 +89,9 @@ public interface ProductService {
 	 * Retrieves a list of all products along with their stock details.
 	 *
 	 * @return A list of {@link OverAllStock} objects, each containing product ID,
-	 * name, and quantity.
+	 *         name, and quantity.
 	 */
-	public List<OverAllStock> getAllStocks();
+	public List<StockDTO> getAllStocks();
 
 	/**
 	 * Retrieves a list of products with their names and quantities.
@@ -104,9 +104,11 @@ public interface ProductService {
 	 * Updates the quantity of a specific product.
 	 *
 	 * @param quantityDTO A {@link QuantityDTO} containing the product ID and the
-	 * new quantity.
+	 *                    new quantity.
 	 * @return A confirmation message indicating the result of the operation.
 	 */
 	public String updateQuantity(QuantityDTO quantityDTO);
+
+	public int checkProductId(int id);
 
 }
