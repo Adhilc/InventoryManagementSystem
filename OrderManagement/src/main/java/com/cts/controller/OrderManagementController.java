@@ -86,7 +86,7 @@ public class OrderManagementController {
  	 * @return A ResponseEntity with a list of OrderReportSent objects.
  	 * @throws DateNotFoundException if no orders are found within the date range.
  	 */
-	@GetMapping("/getByDate")
+	@PostMapping("/getByDate")
 	public ResponseEntity<List<OrderReportSent>> getDetailsByDate(@RequestBody OrderReport orderReport)throws DateNotFoundException{
 		
 		return service.getDetailsByDate(orderReport);

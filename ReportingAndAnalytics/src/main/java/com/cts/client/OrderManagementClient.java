@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.cts.model.OrderReport;
 import com.cts.model.OrderReportSent;
@@ -12,6 +12,6 @@ import com.cts.model.OrderReportSent;
 @FeignClient(value="ORDERMANAGEMENT", path="/api/order/")
 public interface OrderManagementClient {
 
-	@GetMapping("/getByDate")
+	@PostMapping("/getByDate")
 	ResponseEntity<List<OrderReportSent>> getDetailsByDate(OrderReport orderReport);
 }
