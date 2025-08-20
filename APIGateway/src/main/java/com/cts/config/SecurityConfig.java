@@ -27,7 +27,7 @@ public class SecurityConfig {
         return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers("/auth/login", "/auth/register").permitAll()
-                        .pathMatchers("/api/order/save").hasRole("USER")
+                        .pathMatchers(HttpMethod.POST, "/api/order/save").hasRole("USER")
                         .anyExchange().hasRole("ADMIN")
                     )
                 .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION).build();
