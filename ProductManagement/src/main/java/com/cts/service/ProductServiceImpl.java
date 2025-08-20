@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.cts.client.StockManagementClient;
 import com.cts.exception.ProductNotFound;
+import com.cts.model.OverAllStock;
 import com.cts.model.Product;
 import com.cts.model.ProductDTO;
 import com.cts.model.QuantityDTO;
@@ -167,8 +168,8 @@ public class ProductServiceImpl implements ProductService {
 	 * </p>
 	 */
 	@Override
-	public List<StockDTO> getAllStocks() {
-		List<StockDTO> pr = repo.getAllStocks();
+	public List<OverAllStock> getAllStocks() {
+		List<OverAllStock> pr = repo.getAllStocks();
 		return pr;
 
 	}

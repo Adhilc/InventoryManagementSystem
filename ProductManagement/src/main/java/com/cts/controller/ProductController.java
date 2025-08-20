@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cts.client.StockManagementClient;
 import com.cts.exception.ProductNotFound;
+import com.cts.model.OverAllStock;
 import com.cts.model.Product;
 import com.cts.model.ProductDTO;
 import com.cts.model.QuantityDTO;
-import com.cts.model.StockDTO;
 import com.cts.service.ProductService;
 
 import jakarta.validation.Valid;
@@ -67,8 +67,8 @@ public class ProductController {
 	 * @return A list of {@link OverAllStock} objects containing product and stock
 	 *         details.
 	 */
-	@GetMapping("/getAll")
-	public List<StockDTO> getAllProductsStocks() {
+	@PostMapping("/getAll")
+	public List<OverAllStock> getAllProductsStocks() {
 		return service.getAllStocks();
 	}
 

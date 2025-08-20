@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-
+@AllArgsConstructor
 /**
 * DTO used to represent the data for an order report.
 * It contains a subset of `Order` fields, specifically for the report view.
@@ -21,9 +21,5 @@ public class OrderReportSent {
 	private LocalDateTime date;
 	private int quantity;
 	
-	public OrderReportSent(int productId, LocalDateTime date, int quantity) {
-        this.productId = productId;
-        this.date = date;
-        this.quantity = quantity;
-    }
+	
 }
