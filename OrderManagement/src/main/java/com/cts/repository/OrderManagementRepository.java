@@ -20,13 +20,14 @@ public interface OrderManagementRepository extends JpaRepository<Order,Integer> 
 
 	List<Order> findByCustomerId(int id);
 
+	// After:
 	@Query("SELECT new com.cts.model.OrderReportSent(o.productId, o.orderDate, o.quantity) " +
-			   "FROM Order o " +
-			   "WHERE o.orderDate BETWEEN :startDate AND :endDate")
-		List<OrderReportSent> findOrderReportByDateBetween(
-			@Param("startDate") LocalDateTime startDate,
-			@Param("endDate") LocalDateTime endDate
-		);
+	        "FROM Order o " + // Correct! Use the entity name "Order".
+	        "WHERE o.orderDate BETWEEN :startDate AND :endDate")
+	List<OrderReportSent> findOrderReportByDateBetween(
+	    @Param("startDate") LocalDateTime startDate,
+	    @Param("endDate") LocalDateTime endDate
+	);
 
 	/**
 	 * Finds the first order in the table, ordered by the order date in ascending order.

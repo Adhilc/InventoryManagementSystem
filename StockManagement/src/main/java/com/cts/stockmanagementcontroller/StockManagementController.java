@@ -1,8 +1,7 @@
 package com.cts.stockmanagementcontroller;
-
+ 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,21 +17,21 @@ import com.cts.stockmanagementmodel.ProductDTO;
 import com.cts.stockmanagementmodel.Stock;
 import com.cts.stockmanagementmodel.StockDTO;
 import com.cts.stockmanagementservice.StockManagementService;
-
+ 
 @RestController
-@RequestMapping("/api/stock") 
+@RequestMapping("/api/stock")
 public class StockManagementController {
-
+ 
     private final StockManagementService stockManagementService;
-
+ 
     @Autowired
     public StockManagementController(StockManagementService stockManagementService) {
         this.stockManagementService = stockManagementService;
     }
     
     @PostMapping("/save")
-    public String save() {
-    	stockManagementService.save();
+    public String save(@RequestBody Stock stock) {
+    	stockManagementService.save(stock);
     	return "Saved successfully";
     	
     	
@@ -42,8 +41,8 @@ public class StockManagementController {
         Stock stock = stockManagementService.getStockByProductId(productId);
         return ResponseEntity.ok(stock);
     }
-
-
+ 
+ 
    
     @PutMapping("/{productId}/increase")
     public ResponseEntity<Stock> increaseStock(@PathVariable int productId, @RequestBody Map<String, Integer> request) {
@@ -64,7 +63,7 @@ public class StockManagementController {
         Stock updatedStock = stockManagementService.decreaseStock(productId, amount);
         return ResponseEntity.ok(updatedStock);
     }
-
+ 
   
     @GetMapping("/low-stock-report")
     public ResponseEntity<List<Stock>> getLowStockReport() {
@@ -88,3 +87,5 @@ public class StockManagementController {
         return ResponseEntity.ok(lowStockDTOs);
     }
 }
+ 
+ 
