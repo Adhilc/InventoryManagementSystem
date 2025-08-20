@@ -9,6 +9,6 @@ import com.cts.model.StockDTO;
 @FeignClient(name = "STOCKMANAGEMENT",path="/api/stock")
 public interface StockManagementClient {
 
-	@PostMapping("/stocks") 
+	@PostMapping("/save") 
 	void save(@RequestBody StockDTO stockDto);
 }
