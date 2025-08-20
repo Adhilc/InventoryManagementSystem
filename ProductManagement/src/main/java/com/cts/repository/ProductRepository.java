@@ -49,8 +49,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
 	@Query("SELECT new com.cts.model.StockDTO(p.productID, p.name , p.stockLevel) FROM Product p")
 	List<StockDTO> getAllStocks();
-	
-	
+
 	@Query("SELECT new com.cts.model.StockDTO(p.productID, p.name, p.stockLevel) FROM Product p")
 	List<ProductDTO> getAllProductQuantity();
 
