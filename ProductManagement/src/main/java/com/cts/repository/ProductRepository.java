@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import com.cts.model.OverAllStock;
 import com.cts.model.Product;
 import com.cts.model.ProductDTO;
-import com.cts.model.StockDTO;
 
 /**
  * Spring Data JPA repository for the {@link Product} entity. 🗄️
@@ -47,8 +47,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	 */
 	List<Product> findByPriceBetween(int initial, int fina);
 
-	@Query("SELECT new com.cts.model.StockDTO(p.productID, p.name , p.stockLevel) FROM Product p")
-	List<StockDTO> getAllStocks();
+	@Query("SELECT new com.cts.model.OverAllStock(p.productID, p.name, p.stockLevel) FROM Product p")
+	List<OverAllStock> getAllStocks();
 
 	@Query("SELECT new com.cts.model.StockDTO(p.productID, p.name, p.stockLevel) FROM Product p")
 	List<ProductDTO> getAllProductQuantity();

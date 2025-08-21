@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cts.client.StockManagementClient;
 import com.cts.exception.ProductNotFound;
+import com.cts.model.OverAllStock;
 import com.cts.model.Product;
 import com.cts.model.ProductDTO;
 import com.cts.model.QuantityDTO;
@@ -42,6 +43,7 @@ public class ProductController {
 	 */
 	@Autowired
 	ProductService service;
+	
 	@Autowired
 	StockManagementClient stockManagementClient;
 
@@ -67,8 +69,8 @@ public class ProductController {
 	 * @return A list of {@link OverAllStock} objects containing product and stock
 	 *         details.
 	 */
-	@GetMapping("/getAll")
-	public List<StockDTO> getAllProductsStocks() {
+	@PostMapping("/getAll")
+	public List<OverAllStock> getAllProductsStocks() {
 		return service.getAllStocks();
 	}
 
@@ -176,5 +178,7 @@ public class ProductController {
 	{
 		return service.checkProductId(id);
 	}
+	
+	
 
 }

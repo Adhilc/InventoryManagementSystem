@@ -20,6 +20,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.cts.exception.ProductNotFound;
+import com.cts.model.OverAllStock;
 import com.cts.model.Product;
 import com.cts.model.ProductDTO;
 import com.cts.model.QuantityDTO;
@@ -210,11 +211,11 @@ class UserServiceTest {
 	@Test
 	void getAllStocks_shouldReturnAllOverallStocks() {
 		// Arrange
-		List<StockDTO> stocks = Arrays.asList(new StockDTO(), new StockDTO());
+		List<OverAllStock> stocks = Arrays.asList(new OverAllStock(), new OverAllStock());
 		when(productRepository.getAllStocks()).thenReturn(stocks);
 
 		// Act
-		List<StockDTO> result = service.getAllStocks();
+		List<OverAllStock> result = service.getAllStocks();
 
 		// Assert
 		assertEquals(2, result.size());

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.cts.exception.ProductNotFound;
+import com.cts.model.OverAllStock;
 import com.cts.model.Product;
 import com.cts.model.ProductDTO;
 import com.cts.model.QuantityDTO;
@@ -91,7 +92,7 @@ public interface ProductService {
 	 * @return A list of {@link OverAllStock} objects, each containing product ID,
 	 *         name, and quantity.
 	 */
-	public List<StockDTO> getAllStocks();
+	public List<OverAllStock> getAllStocks();
 
 	/**
 	 * Retrieves a list of products with their names and quantities.
