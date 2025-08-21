@@ -2,6 +2,8 @@ package com.cts.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,8 +25,6 @@ import com.cts.model.QuantityDTO;
 import com.cts.service.ProductService;
 
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * REST Controller for managing products.
@@ -46,7 +46,7 @@ public class ProductController {
 	 */
 	@Autowired
 	ProductService service;
-	
+
 	@Autowired
 	StockManagementClient stockManagementClient;
 
@@ -55,10 +55,10 @@ public class ProductController {
 	 * annotation triggers validation on the product object.
 	 *
 	 * @param product The product data from the request body. Must be a valid
-	 * Product object.
+	 *                Product object.
 	 * @return A confirmation message from the service layer.
 	 * @throws MethodArgumentNotValidException if the product object fails
-	 * validation.
+	 *                                         validation.
 	 */
 	@PostMapping("/add")
 	public Product saveProduct(@Valid @RequestBody Product product) throws MethodArgumentNotValidException {
@@ -73,7 +73,7 @@ public class ProductController {
 	 * information.
 	 *
 	 * @return A list of {@link OverAllStock} objects containing product and stock
-	 * details.
+	 *         details.
 	 */
 	@PostMapping("/getAll")
 	public List<OverAllStock> getAllProductsStocks() {
@@ -88,10 +88,10 @@ public class ProductController {
 	 * annotation triggers validation on the product object.
 	 *
 	 * @param product The updated product data from the request body. Must be a
-	 * valid Product object.
+	 *                valid Product object.
 	 * @return A confirmation message from the service layer.
 	 * @throws MethodArgumentNotValidException if the product object fails
-	 * validation.
+	 *                                         validation.
 	 */
 	@PutMapping("/update")
 	public String updateProduct(@Valid @RequestBody Product product)
@@ -165,7 +165,7 @@ public class ProductController {
 	 * @param initial The starting price of the range, from the URL path.
 	 * @param fina    The final (ending) price of the range, from the URL path.
 	 * @return A list of {@link Product} objects that fall within the specified
-	 * price range.
+	 *         price range.
 	 */
 	@GetMapping("/viewBasedOnPriceRange/{initial}/{fina}")
 	public List<Product> getProductsBetweenPriceRange(@PathVariable("initial") int initial,
@@ -178,9 +178,8 @@ public class ProductController {
 
 	/**
 	 * Handles GET requests to retrieve the product name and quantity for all
-	 * products.
-	 * * @return A list of {@link ProductDTO} objects, each containing a product's
-	 * name and quantity.
+	 * products. * @return A list of {@link ProductDTO} objects, each containing a
+	 * product's name and quantity.
 	 */
 	@GetMapping("/getProductQuantiy")
 	public List<ProductDTO> getAllProductQuantity() {
@@ -194,18 +193,18 @@ public class ProductController {
 	 * Handles PUT requests to update the quantity of a product.
 	 *
 	 * @param quantityDTO An object containing the product ID and the new quantity
-	 * to be set.
+	 *                    to be set.
 	 * @return A confirmation message from the service layer.
 	 */
-	@PutMapping("/updateQuantity")
+	@PostMapping("/updateQuantity")
 	public String updateQuantity(@RequestBody QuantityDTO quantityDTO) {
-		logger.info("Received request to update quantity for product ID: {} to new quantity: {}", 
+		logger.info("Received request to update quantity for product ID: {} to new quantity: {}",
 				quantityDTO.getProductID(), quantityDTO.getQuantity());
 		String result = service.updateQuantity(quantityDTO);
 		logger.info("Quantity updated for product ID {}. Message: {}", quantityDTO.getProductID(), result);
 		return result;
 	}
-	
+
 	/**
 	 * Handles POST requests to check if a product ID exists.
 	 *
