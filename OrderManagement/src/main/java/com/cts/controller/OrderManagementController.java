@@ -97,7 +97,7 @@ public class OrderManagementController {
 	 * @return A success message.
 	 * @throws OrderNotFoundException if the order is not found.
 	 */
-	@PostMapping("/updateStatus/{status}")
+	@PostMapping("/updateStatus/{orderId}/{status}")
 	public String updateStatus(@PathVariable int orderId,@PathVariable String status) throws OrderNotFoundException {
 		
 		return service.updateStatus(orderId,status);

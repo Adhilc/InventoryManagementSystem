@@ -6,8 +6,8 @@ import com.cts.stockmanagementmodel.Stock;
 import com.cts.stockmanagementmodel.StockDTO;
  
 public interface StockManagementService {
-//	public String save(Stock stock);
-	public String save();
+	public String saveStock(StockDTO stockDto);
+//	public String save();
 	public Stock getStockByProductId(int  productId);
     public Stock increaseStock(int productId, int amount);
     public Stock decreaseStock(int productId, int amount);

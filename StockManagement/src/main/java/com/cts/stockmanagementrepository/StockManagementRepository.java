@@ -17,8 +17,5 @@ public interface StockManagementRepository extends JpaRepository<Stock, Integer>
 	
 	@Query("SELECT new com.cts.stockmanagementmodel.StockDTO(s.productID, s.name, s.quantity) FROM Stock s WHERE s.quantity <= 20")
 	public List<StockDTO> sendLowStockItems();
-	
-	
 
-	
 }

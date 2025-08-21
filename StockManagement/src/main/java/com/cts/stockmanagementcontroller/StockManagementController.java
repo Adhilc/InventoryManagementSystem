@@ -17,9 +17,12 @@ import com.cts.stockmanagementmodel.ProductDTO;
 import com.cts.stockmanagementmodel.Stock;
 import com.cts.stockmanagementmodel.StockDTO;
 import com.cts.stockmanagementservice.StockManagementService;
+
+import lombok.extern.slf4j.Slf4j;
  
 @RestController
 @RequestMapping("/api/stock")
+@Slf4j
 public class StockManagementController {
  
     private final StockManagementService stockManagementService;
@@ -30,8 +33,8 @@ public class StockManagementController {
     }
     
     @PostMapping("/save")
-    public String save() {
-    	stockManagementService.save();
+    public String saveStock(@RequestBody StockDTO stockDto) {
+    	stockManagementService.saveStock(stockDto);
     	return "Saved successfully";
     	
     	
@@ -59,6 +62,7 @@ public class StockManagementController {
     
     @PutMapping("/{productId}/decrease")
     public ResponseEntity<Stock> decreaseStock(@PathVariable int productId, @RequestBody Map<String, Integer> request) {
+    	log.info("Input Data: "+productId+" and "+request.get("amount"));
         int amount = request.get("amount");
         Stock updatedStock = stockManagementService.decreaseStock(productId, amount);
         return ResponseEntity.ok(updatedStock);

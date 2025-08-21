@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.cts.client.StockManagementClient;
 import com.cts.exception.ProductNotFound;
@@ -28,6 +30,8 @@ import com.cts.repository.ProductRepository;
 @Service
 public class ProductServiceImpl implements ProductService {
 
+	private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
+
 	/**
 	 * The repository for performing database operations on Product entities.
 	 * Spring's dependency injection provides this instance at runtime.
@@ -42,20 +46,26 @@ public class ProductServiceImpl implements ProductService {
 	 * {@inheritDoc}
 	 * <p>
 	 * This implementation saves the product by calling the {@code save} method of
-	 * the {@link ProductRepository}.
+	 * the {@link ProductRepository}. It also creates a corresponding stock entry
+	 * in the stock management microservice.
 	 * </p>
 	 */
 	@Override
 	public Product saveProduct(Product product) throws MethodArgumentNotValidException {
+		logger.info("Attempting to save new product: {}", product.getName());
 		StockDTO stockDto = new StockDTO();
 		stockDto.setName(product.getName());
 		stockDto.setProductID(product.getProductID());
 		stockDto.setQuantity(product.getStockLevel());
 
 		// Call the stock management microservice to create the stock entry
-		sClient.save(stockDto);
+		logger.info("Calling stock management microservice to save stock for product ID: {}", product.getProductID());
+		sClient.saveStock(stockDto);
+		logger.info("Stock entry successfully created for product ID: {}", product.getProductID());
 
-		return repo.save(product);
+		Product savedProduct = repo.save(product);
+		logger.info("Product saved successfully with ID: {}", savedProduct.getProductID());
+		return savedProduct;
 	}
 
 	/**
@@ -66,18 +76,19 @@ public class ProductServiceImpl implements ProductService {
 	 * {@link ProductNotFound} exception to prevent creating a new product via the
 	 * update endpoint.
 	 * </p>
-	 * * @throws ProductNotFound if no product with the specified ID is found.
+	 * @throws ProductNotFound if no product with the specified ID is found.
 	 */
 	@Override
 	public String updateProduct(Product product) throws MethodArgumentNotValidException, ProductNotFound {
 		int productId = product.getProductID();
+		logger.info("Attempting to update product with ID: {}", productId);
 
 		if (repo.existsById(productId)) {
-
 			repo.save(product);
+			logger.info("Product with ID {} updated successfully.", productId);
 			return "Product Updated Successfully";
 		} else {
-
+			logger.error("Update failed: Product with ID {} not found.", productId);
 			throw new ProductNotFound("Update failed: Product with ID " + productId + " not found.");
 		}
 	}
@@ -93,11 +104,14 @@ public class ProductServiceImpl implements ProductService {
 	 */
 	@Override
 	public String deleteProductById(int id) throws ProductNotFound {
+		logger.info("Attempting to delete product with ID: {}", id);
 		Optional<Product> optional = repo.findById(id);
 		if (optional.isEmpty()) {
+			logger.error("Delete failed: Product with ID {} not found.", id);
 			throw new ProductNotFound("Product with ID " + id + " not found.");
 		} else {
 			repo.deleteById(id);
+			logger.info("Product with ID {} deleted successfully.", id);
 			return "Product deleted Successfully";
 		}
 	}
@@ -113,7 +127,10 @@ public class ProductServiceImpl implements ProductService {
 	 */
 	@Override
 	public List<Product> getAllAvailableProducts() {
-		return repo.findByStockLevelGreaterThan(0);
+		logger.info("Fetching all available products (stock level > 0).");
+		List<Product> availableProducts = repo.findByStockLevelGreaterThan(0);
+		logger.info("Found {} available products.", availableProducts.size());
+		return availableProducts;
 	}
 
 	/**
@@ -125,7 +142,10 @@ public class ProductServiceImpl implements ProductService {
 	 */
 	@Override
 	public List<Product> getAllProducts() {
-		return repo.findAll();
+		logger.info("Fetching all products.");
+		List<Product> allProducts = repo.findAll();
+		logger.info("Found a total of {} products.", allProducts.size());
+		return allProducts;
 	}
 
 	/**
@@ -137,7 +157,10 @@ public class ProductServiceImpl implements ProductService {
 	 */
 	@Override
 	public List<Product> getProductsBetweenPriceRange(int initial, int fina) {
-		return repo.findByPriceBetween(initial, fina);
+		logger.info("Fetching products with price between {} and {}.", initial, fina);
+		List<Product> products = repo.findByPriceBetween(initial, fina);
+		logger.info("Found {} products within the specified price range.", products.size());
+		return products;
 	}
 
 	/**
@@ -150,12 +173,14 @@ public class ProductServiceImpl implements ProductService {
 	 */
 	@Override
 	public String getProductName(int id) throws ProductNotFound {
+		logger.info("Attempting to get product name for ID: {}", id);
 		boolean result = repo.existsById(id);
 		if (result) {
-
 			Product pr = repo.getReferenceById(id);
+			logger.info("Found product name for ID {}: {}", id, pr.getName());
 			return pr.getName();
 		} else {
+			logger.error("Product with ID {} not found.", id);
 			throw new ProductNotFound("Product Not Found");
 		}
 	}
@@ -169,9 +194,10 @@ public class ProductServiceImpl implements ProductService {
 	 */
 	@Override
 	public List<OverAllStock> getAllStocks() {
-		List<OverAllStock> pr = repo.getAllStocks();
-		return pr;
-
+		logger.info("Fetching all products with their stock information.");
+		List<OverAllStock> stocks = repo.getAllStocks();
+		logger.info("Successfully retrieved stock information for {} products.", stocks.size());
+		return stocks;
 	}
 
 	/**
@@ -183,9 +209,10 @@ public class ProductServiceImpl implements ProductService {
 	 */
 	@Override
 	public List<ProductDTO> getAllProductQuantity() {
-		List<ProductDTO> pr = repo.getAllProductQuantity();
-		return pr;
-
+		logger.info("Fetching all product quantities.");
+		List<ProductDTO> productQuantities = repo.getAllProductQuantity();
+		logger.info("Successfully retrieved quantities for {} products.", productQuantities.size());
+		return productQuantities;
 	}
 
 	/**
@@ -198,21 +225,38 @@ public class ProductServiceImpl implements ProductService {
 	 */
 	@Override
 	public String updateQuantity(QuantityDTO quantityDTO) {
+		logger.info("Attempting to update quantity for product with ID: {} to {}", 
+				quantityDTO.getProductID(), quantityDTO.getQuantity());
 		Product product = repo.findByProductID(quantityDTO.getProductID());
-
-		product.setStockLevel(quantityDTO.getQuantity());
-		repo.save(product);
-		return "Successfully updated quantity";
+		if (product != null) {
+			product.setStockLevel(quantityDTO.getQuantity());
+			repo.save(product);
+			logger.info("Quantity successfully updated for product ID: {}", quantityDTO.getProductID());
+			return "Successfully updated quantity";
+		} else {
+			logger.error("Failed to update quantity: Product with ID {} not found.", quantityDTO.getProductID());
+			return "Product not found";
+		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * This implementation checks if a product with the given ID exists. If it does,
+	 * it returns the current stock level. Otherwise, it returns -1 to indicate that
+	 * the product was not found.
+	 * </p>
+	 */
 	@Override
 	public int checkProductId(int id) {
-
+		logger.info("Checking for the existence of product with ID: {}", id);
 		boolean result = repo.existsById(id);
 		if (result) {
 			Product pro = repo.findByProductID(id);
+			logger.info("Product with ID {} found. Current stock level is: {}", id, pro.getStockLevel());
 			return pro.getStockLevel();
 		}
+		logger.warn("Product with ID {} not found.", id);
 		return -1;
 	}
 }

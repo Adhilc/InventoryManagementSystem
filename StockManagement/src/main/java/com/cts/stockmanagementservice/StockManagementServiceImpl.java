@@ -1,7 +1,6 @@
 package com.cts.stockmanagementservice;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,13 +9,15 @@ import com.cts.client.ProductManagementClient;
 import com.cts.stockmanagementexceptions.InsufficientStockException;
 import com.cts.stockmanagementexceptions.InvalidStockAmountException;
 import com.cts.stockmanagementexceptions.StockNotFoundException;
-import com.cts.stockmanagementmodel.OverAllStock;
 import com.cts.stockmanagementmodel.QuantityDTO;
 import com.cts.stockmanagementmodel.Stock;
 import com.cts.stockmanagementmodel.StockDTO;
 import com.cts.stockmanagementrepository.StockManagementRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class StockManagementServiceImpl implements StockManagementService {
 
     private final StockManagementRepository stockRepository;
@@ -44,6 +45,7 @@ public class StockManagementServiceImpl implements StockManagementService {
         QuantityDTO quantityDTO = new QuantityDTO();
         int updatedQuantity=stock.getQuantity() + amount;
         quantityDTO.setQuantity(updatedQuantity);
+        quantityDTO.setProductID(productId);
         stock.setQuantity(updatedQuantity);
         pClient.updateQuantity(quantityDTO); // Blocking call
         return stockRepository.save(stock); // Blocking call
@@ -51,6 +53,7 @@ public class StockManagementServiceImpl implements StockManagementService {
 
     @Override
     public Stock decreaseStock(int productId, int amount) {
+    	log.info("Input Data in service: "+productId+" and "+amount);
         if (amount <= 0) {
             throw new InvalidStockAmountException("Decrease amount must be positive.");
         }
@@ -60,9 +63,13 @@ public class StockManagementServiceImpl implements StockManagementService {
                     + ". Available: " + stock.getQuantity() + ", Required: " + amount);
         }
         QuantityDTO quantityDTO = new QuantityDTO();
-        quantityDTO.setQuantity(stock.getQuantity() - amount);
+       int updatedQuantity= stock.getQuantity() - amount;
+        quantityDTO.setQuantity(updatedQuantity);
+        quantityDTO.setProductID(productId);
+    	log.info("Quantity DTO Data *******************************"+quantityDTO);
         pClient.updateQuantity(quantityDTO); // Blocking call
-        stock.setQuantity(stock.getQuantity() - amount);
+        log.info("After Open Feign...................");
+        stock.setQuantity(updatedQuantity);
         return stockRepository.save(stock); // Blocking call
     }
 
@@ -70,36 +77,22 @@ public class StockManagementServiceImpl implements StockManagementService {
     public List<Stock> getLowStockItems() {
         return stockRepository.findLowStockItems(); // Blocking call
     }
-
     @Override
     public List<StockDTO> sendLowStockItems() {
         return stockRepository.sendLowStockItems(); // Blocking call
     }
     
     
-    @Override
-    public String save() {
-        List<OverAllStock> overAllStocks = pClient.getAllProductsStocks(); // Blocking call
-        
-        List<Stock> newStocks = overAllStocks.stream()
-            .map(overAllStock -> {
-                Stock stock = new Stock();
-                stock.setProductID(overAllStock.getProductID());
-                stock.setName(overAllStock.getName());
-                stock.setQuantity(overAllStock.getQuantity());
-                stock.setReorderLevel(20);
-                return stock;
-            })
-            .collect(Collectors.toList());
-
-        stockRepository.saveAll(newStocks); // Blocking call
-        return "Saved successfully";
+    public String saveStock(StockDTO stockDto) {
+    	
+    	Stock stock = new Stock();
+    	stock.setProductID(stockDto.getProductID());
+    	stock.setName(stockDto.getName());
+    	stock.setQuantity(stockDto.getQuantity());
+    	stock.setReorderLevel(20);
+       	stockRepository.save(stock);
+    	return "saved";
     }
-    
-//    public String save(Stock stock) {
-//       	stockRepository.save(stock);
-//    	return "saved";
-//    }
 
 
 }

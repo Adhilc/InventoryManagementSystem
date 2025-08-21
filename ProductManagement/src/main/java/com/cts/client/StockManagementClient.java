@@ -10,5 +10,5 @@ import com.cts.model.StockDTO;
 public interface StockManagementClient {
 
 	@PostMapping("/save") 
-	void save(@RequestBody StockDTO stockDto);
+	void saveStock(@RequestBody StockDTO stock);
 }

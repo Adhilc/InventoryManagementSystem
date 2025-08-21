@@ -25,6 +25,10 @@ public class QuantityDTO {
 	public QuantityDTO() {
 		super();
 	}
+	@Override
+	public String toString() {
+		return "QuantityDTO [productID=" + productID + ", quantity=" + quantity + "]";
+	}
 	
 
 }

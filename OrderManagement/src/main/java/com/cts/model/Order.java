@@ -1,5 +1,6 @@
 package com.cts.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
@@ -17,18 +18,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name="orders")
 public class Order {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int orderId;
 	private int customerId;
 	private int productId;
-	private int  quantity;
-	private LocalDateTime orderDate;
+	private int quantity;
+	private LocalDate orderDate; // Changed from LocalDateTime
 	private String status;
-	
-	
-	
-	
-	
 }
