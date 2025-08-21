@@ -19,10 +19,8 @@ import com.cts.model.StockDTO;
 @FeignClient(name = "STOCKMANAGEMENT",path="/api/stock")
 public interface StockManagementClient {
 
-<<<<<<< HEAD
 	@PostMapping("/save") 
 	void saveStock(@RequestBody StockDTO stock);
-=======
 	/**
 	 * Sends a POST request to the "/save" endpoint of the STOCKMANAGEMENT service.
 	 * <p>
@@ -35,5 +33,4 @@ public interface StockManagementClient {
 	 */
 	@PostMapping("/save")
 	void save(@RequestBody StockDTO stockDto);
->>>>>>> 8be4027cfa2df15e4a8df7b0fac05f90710844cd
 }

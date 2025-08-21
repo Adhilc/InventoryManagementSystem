@@ -25,8 +25,6 @@ import com.cts.model.QuantityDTO;
 import com.cts.service.ProductService;
 
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * REST Controller for managing products.
@@ -48,11 +46,8 @@ public class ProductController {
 	 */
 	@Autowired
 	ProductService service;
-<<<<<<< HEAD
 	
-=======
 
->>>>>>> 8be4027cfa2df15e4a8df7b0fac05f90710844cd
 	@Autowired
 	StockManagementClient stockManagementClient;
 
@@ -208,18 +203,13 @@ public class ProductController {
 	 * to be set.
 	 * @return A confirmation message from the service layer.
 	 */
-	@PostMapping("/updateQuantity")
+	@PutMapping("/updateQuantity")
 	public String updateQuantity(@RequestBody QuantityDTO quantityDTO) {
-<<<<<<< HEAD
-		logger.info("Received request to update quantity for product ID: {} to new quantity: {}", 
-=======
 		logger.info("Received request to update quantity for product ID: {} to new quantity: {}",
->>>>>>> 8be4027cfa2df15e4a8df7b0fac05f90710844cd
 				quantityDTO.getProductID(), quantityDTO.getQuantity());
 		String result = service.updateQuantity(quantityDTO);
 		logger.info("Quantity updated for product ID {}. Message: {}", quantityDTO.getProductID(), result);
 		return result;
-<<<<<<< HEAD
 	}
 	
 	/**
@@ -235,21 +225,18 @@ public class ProductController {
 		logger.info("Product ID check for {} returned: {}", id, foundId);
 		return foundId;
 	}
-=======
-	}
-
-	/**
-	 * Handles POST requests to check if a product ID exists.
-	 *
-	 * @param id The ID of the product to check.
-	 * @return The product ID if it exists.
-	 */
-	@PostMapping("/checkProductId")
-	public int checkProductId(@RequestParam int id) {
-		logger.info("Received request to check if product ID {} exists.", id);
-		int foundId = service.checkProductId(id);
-		logger.info("Product ID check for {} returned: {}", id, foundId);
-		return foundId;
-	}
->>>>>>> 8be4027cfa2df15e4a8df7b0fac05f90710844cd
 }
+//
+//	/**
+//	 * Handles POST requests to check if a product ID exists.
+//	 *
+//	 * @param id The ID of the product to check.
+//	 * @return The product ID if it exists.
+//	 */
+//	@PostMapping("/checkProductId")
+//	public int checkProductId(@RequestParam int id) {
+//		logger.info("Received request to check if product ID {} exists.", id);
+//		int foundId = service.checkProductId(id);
+//		logger.info("Product ID check for {} returned: {}", id, foundId);
+//		return foundId;
+//	}

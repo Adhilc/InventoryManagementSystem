@@ -1,28 +1,11 @@
 package com.cts.model;
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 8be4027cfa2df15e4a8df7b0fac05f90710844cd
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-<<<<<<< HEAD
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 
-public class OverAllStock {
-	
-	private int productID;
-	private String name;
-	private int quantity;
-	
-
-}
-
-=======
 /**
  * Data Transfer Object (DTO) representing a product's stock information.
  * <p>
@@ -59,4 +42,3 @@ public class OverAllStock {
 	 */
 	private int quantity;
 }
->>>>>>> 8be4027cfa2df15e4a8df7b0fac05f90710844cd
