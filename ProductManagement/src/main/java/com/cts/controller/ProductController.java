@@ -20,7 +20,6 @@ import com.cts.model.OverAllStock;
 import com.cts.model.Product;
 import com.cts.model.ProductDTO;
 import com.cts.model.QuantityDTO;
-import com.cts.model.StockDTO;
 import com.cts.service.ProductService;
 
 import jakarta.validation.Valid;

@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -98,7 +97,7 @@ public class OrderManagementController {
 	 * @return A success message.
 	 * @throws OrderNotFoundException if the order is not found.
 	 */
-	@PutMapping("/updateStatus/{orderId}/{status}")
+	@PostMapping("/updateStatus/{status}")
 	public String updateStatus(@PathVariable int orderId,@PathVariable String status) throws OrderNotFoundException {
 		
 		return service.updateStatus(orderId,status);

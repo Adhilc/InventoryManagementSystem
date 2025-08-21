@@ -1,6 +1,6 @@
 package com.cts.repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,11 +22,11 @@ public interface OrderManagementRepository extends JpaRepository<Order,Integer> 
 
 	// After:
 	@Query("SELECT new com.cts.model.OrderReportSent(o.productId, o.orderDate, o.quantity) " +
-	        "FROM Order o " + // Correct! Use the entity name "Order".
+	        "FROM Order o " +
 	        "WHERE o.orderDate BETWEEN :startDate AND :endDate")
 	List<OrderReportSent> findOrderReportByDateBetween(
-	    @Param("startDate") LocalDateTime startDate,
-	    @Param("endDate") LocalDateTime endDate
+	    @Param("startDate") LocalDate startDate, // Changed from LocalDateTime
+	    @Param("endDate") LocalDate endDate // Changed from LocalDateTime
 	);
 
 	/**

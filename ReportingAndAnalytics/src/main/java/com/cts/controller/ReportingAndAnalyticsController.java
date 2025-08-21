@@ -1,5 +1,6 @@
 package com.cts.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,13 +31,14 @@ public class ReportingAndAnalyticsController {
 		this.service=service;
 	}
 	@GetMapping("/getByDate/order/{startDate}/{endDate}")
-	public ResponseEntity<List<OrderReportSent>> getOrderDetailsByDate(@PathVariable LocalDateTime startDate,@PathVariable LocalDateTime endDate){
+	public ResponseEntity<List<OrderReportSent>> getOrderDetailsByDate(@PathVariable LocalDate startDate,@PathVariable LocalDate endDate){
 			
 		OrderReport orderReport = new OrderReport();
 		orderReport.setStartDate(startDate);
 		orderReport.setEndDate(endDate);
 		return service.getDetailsByDate(orderReport);
 	}
+	
 	@GetMapping("/getByDate/supplier/{startDate}/{endDate}")
 	public ResponseEntity<List<SupplierReportSent>> getSupplierDetailsByDate(@PathVariable LocalDateTime startDate,@PathVariable LocalDateTime endDate){
 			log.info("Start Date: "+startDate+" End Date :"+endDate);

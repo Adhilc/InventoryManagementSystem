@@ -24,7 +24,6 @@ import com.cts.model.OverAllStock;
 import com.cts.model.Product;
 import com.cts.model.ProductDTO;
 import com.cts.model.QuantityDTO;
-import com.cts.model.StockDTO;
 import com.cts.repository.ProductRepository;
 import com.cts.service.ProductServiceImpl;
 
@@ -207,23 +206,22 @@ class UserServiceTest {
 		verify(productRepository, times(1)).findByPriceBetween(50, 100);
 	}
 
-	// --- getAllStocks tests ---
-	@Test
-	void getAllStocks_shouldReturnAllOverallStocks() {
-		// Arrange
-		List<OverAllStock> stocks = Arrays.asList(new OverAllStock(), new OverAllStock());
-		when(productRepository.getAllStocks()).thenReturn(stocks);
 
-		// Act
-		List<OverAllStock> result = service.getAllStocks();
+		@Test
+		void getAllStocks_shouldReturnAllOverallStocks() {
+			// Arrange
+			List<OverAllStock> stocks = Arrays.asList(new OverAllStock(), new OverAllStock());
+			when(productRepository.getAllStocks()).thenReturn(stocks);
+	 
+			// Act
+			List<OverAllStock> result = service.getAllStocks();
+	 
+			// Assert
+			assertEquals(2, result.size());
+			assertEquals("Prod1", result.get(0).getProductID());
+			verify(productRepository, times(1)).getAllStocks();
+		}
 
-		// Assert
-		assertEquals(2, result.size());
-		assertEquals("Prod1", result.get(0).getProductID());
-		verify(productRepository, times(1)).getAllStocks();
-	}
-
-	// --- getAllProductQuantity tests ---
 	@Test
 	void getAllProductQuantity_shouldReturnAllProductDTOs() {
 		// Arrange

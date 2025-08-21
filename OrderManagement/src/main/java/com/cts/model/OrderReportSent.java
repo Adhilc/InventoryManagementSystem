@@ -1,5 +1,6 @@
 package com.cts.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-
+@AllArgsConstructor
 /**
 * DTO used to represent the data for an order report.
 * It contains a subset of `Order` fields, specifically for the report view.
@@ -18,12 +19,6 @@ import lombok.NoArgsConstructor;
 public class OrderReportSent {
 
 	private int productId;
-	private LocalDateTime date;
+	private LocalDate date; // Changed from LocalDateTime
 	private int quantity;
-	
-	public OrderReportSent(int productId, LocalDateTime date, int quantity) {
-        this.productId = productId;
-        this.date = date;
-        this.quantity = quantity;
-    }
 }

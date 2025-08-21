@@ -50,7 +50,7 @@ public class StockManagementController {
         Stock updatedStock = stockManagementService.increaseStock(productId, amount);
         return ResponseEntity.ok(updatedStock);
     }
-    @PutMapping("decrease")
+    @PostMapping("decrease")
     public ResponseEntity<Stock> decreaseStockFromOrder(@RequestBody ProductDTO productDTO) {
         Stock updatedStock = stockManagementService.decreaseStock(productDTO.getProductID(), productDTO.getQuantity());
         return ResponseEntity.ok(updatedStock);
