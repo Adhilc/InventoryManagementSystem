@@ -23,6 +23,8 @@ import com.cts.model.QuantityDTO;
 import com.cts.service.ProductService;
 
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * REST Controller for managing products.
@@ -35,6 +37,8 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/product")
 public class ProductController {
+
+	private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
 	/**
 	 * Autowired instance of ProductService to handle business logic. Spring's
@@ -51,14 +55,17 @@ public class ProductController {
 	 * annotation triggers validation on the product object.
 	 *
 	 * @param product The product data from the request body. Must be a valid
-	 *                Product object.
+	 * Product object.
 	 * @return A confirmation message from the service layer.
 	 * @throws MethodArgumentNotValidException if the product object fails
-	 *                                         validation.
+	 * validation.
 	 */
 	@PostMapping("/add")
 	public Product saveProduct(@Valid @RequestBody Product product) throws MethodArgumentNotValidException {
-		return service.saveProduct(product);
+		logger.info("Received request to save a new product: {}", product.getName());
+		Product savedProduct = service.saveProduct(product);
+		logger.info("Successfully saved product with ID: {}", savedProduct.getProductID());
+		return savedProduct;
 	}
 
 	/**
@@ -66,11 +73,14 @@ public class ProductController {
 	 * information.
 	 *
 	 * @return A list of {@link OverAllStock} objects containing product and stock
-	 *         details.
+	 * details.
 	 */
 	@PostMapping("/getAll")
 	public List<OverAllStock> getAllProductsStocks() {
-		return service.getAllStocks();
+		logger.info("Received request to retrieve all products with stock information.");
+		List<OverAllStock> stocks = service.getAllStocks();
+		logger.info("Successfully retrieved {} products with stock information.", stocks.size());
+		return stocks;
 	}
 
 	/**
@@ -78,15 +88,18 @@ public class ProductController {
 	 * annotation triggers validation on the product object.
 	 *
 	 * @param product The updated product data from the request body. Must be a
-	 *                valid Product object.
+	 * valid Product object.
 	 * @return A confirmation message from the service layer.
 	 * @throws MethodArgumentNotValidException if the product object fails
-	 *                                         validation.
+	 * validation.
 	 */
 	@PutMapping("/update")
 	public String updateProduct(@Valid @RequestBody Product product)
 			throws MethodArgumentNotValidException, ProductNotFound {
-		return service.updateProduct(product);
+		logger.info("Received request to update product with ID: {}", product.getProductID());
+		String result = service.updateProduct(product);
+		logger.info("Product with ID {} updated successfully. Message: {}", product.getProductID(), result);
+		return result;
 	}
 
 	/**
@@ -98,7 +111,10 @@ public class ProductController {
 	 */
 	@GetMapping("/getProductName/{id}")
 	public String getProductName(@PathVariable("id") int id) throws ProductNotFound {
-		return service.getProductName(id);
+		logger.info("Received request to get product name for ID: {}", id);
+		String productName = service.getProductName(id);
+		logger.info("Found product name for ID {}: {}", id, productName);
+		return productName;
 	}
 
 	/**
@@ -110,7 +126,10 @@ public class ProductController {
 	 */
 	@DeleteMapping("/deleteById/{id}")
 	public String deleteProduct(@PathVariable("id") int id) throws ProductNotFound {
-		return service.deleteProductById(id);
+		logger.info("Received request to delete product with ID: {}", id);
+		String result = service.deleteProductById(id);
+		logger.info("Product with ID {} deleted successfully. Message: {}", id, result);
+		return result;
 	}
 
 	/**
@@ -120,7 +139,10 @@ public class ProductController {
 	 */
 	@GetMapping("/viewAllAvailable")
 	public List<Product> getAllAvailableProducts() {
-		return service.getAllAvailableProducts();
+		logger.info("Received request to view all available products.");
+		List<Product> products = service.getAllAvailableProducts();
+		logger.info("Successfully retrieved {} available products.", products.size());
+		return products;
 	}
 
 	/**
@@ -131,7 +153,10 @@ public class ProductController {
 	 */
 	@GetMapping("/viewAll")
 	public List<Product> getAllProducts() {
-		return service.getAllProducts();
+		logger.info("Received request to view all products.");
+		List<Product> products = service.getAllProducts();
+		logger.info("Successfully retrieved a total of {} products.", products.size());
+		return products;
 	}
 
 	/**
@@ -140,44 +165,58 @@ public class ProductController {
 	 * @param initial The starting price of the range, from the URL path.
 	 * @param fina    The final (ending) price of the range, from the URL path.
 	 * @return A list of {@link Product} objects that fall within the specified
-	 *         price range.
+	 * price range.
 	 */
 	@GetMapping("/viewBasedOnPriceRange/{initial}/{fina}")
 	public List<Product> getProductsBetweenPriceRange(@PathVariable("initial") int initial,
 			@PathVariable("fina") int fina) {
-		return service.getProductsBetweenPriceRange(initial, fina);
+		logger.info("Received request to view products between price range {} and {}", initial, fina);
+		List<Product> products = service.getProductsBetweenPriceRange(initial, fina);
+		logger.info("Successfully retrieved {} products within the specified price range.", products.size());
+		return products;
 	}
 
 	/**
 	 * Handles GET requests to retrieve the product name and quantity for all
 	 * products.
-	 * 
-	 * @return A list of {@link ProductDTO} objects, each containing a product's
-	 *         name and quantity.
+	 * * @return A list of {@link ProductDTO} objects, each containing a product's
+	 * name and quantity.
 	 */
 	@GetMapping("/getProductQuantiy")
 	public List<ProductDTO> getAllProductQuantity() {
-		return service.getAllProductQuantity();
+		logger.info("Received request to get all product quantities.");
+		List<ProductDTO> quantities = service.getAllProductQuantity();
+		logger.info("Successfully retrieved quantities for {} products.", quantities.size());
+		return quantities;
 	}
 
 	/**
 	 * Handles PUT requests to update the quantity of a product.
 	 *
 	 * @param quantityDTO An object containing the product ID and the new quantity
-	 *                    to be set.
+	 * to be set.
 	 * @return A confirmation message from the service layer.
 	 */
 	@PutMapping("/updateQuantity")
 	public String updateQuantity(@RequestBody QuantityDTO quantityDTO) {
-		return service.updateQuantity(quantityDTO);
+		logger.info("Received request to update quantity for product ID: {} to new quantity: {}", 
+				quantityDTO.getProductID(), quantityDTO.getQuantity());
+		String result = service.updateQuantity(quantityDTO);
+		logger.info("Quantity updated for product ID {}. Message: {}", quantityDTO.getProductID(), result);
+		return result;
 	}
 	
+	/**
+	 * Handles POST requests to check if a product ID exists.
+	 *
+	 * @param id The ID of the product to check.
+	 * @return The product ID if it exists.
+	 */
 	@PostMapping("/checkProductId")
-	public int checkProductId(@RequestParam int id)
-	{
-		return service.checkProductId(id);
+	public int checkProductId(@RequestParam int id) {
+		logger.info("Received request to check if product ID {} exists.", id);
+		int foundId = service.checkProductId(id);
+		logger.info("Product ID check for {} returned: {}", id, foundId);
+		return foundId;
 	}
-	
-	
-
 }
