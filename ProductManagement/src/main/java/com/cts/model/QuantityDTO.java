@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class QuantityDTO {
-	
 	/**
 	 * The unique identifier of the product whose quantity needs to be updated.
 	 */
@@ -27,5 +26,4 @@ public class QuantityDTO {
 	 * The new quantity to be set for the product.
 	 */
 	private int quantity;
-
 }
