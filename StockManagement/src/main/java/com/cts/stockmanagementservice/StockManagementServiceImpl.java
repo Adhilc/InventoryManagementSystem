@@ -1,6 +1,7 @@
 package com.cts.stockmanagementservice;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,8 @@ import com.cts.client.ProductManagementClient;
 import com.cts.stockmanagementexceptions.InsufficientStockException;
 import com.cts.stockmanagementexceptions.InvalidStockAmountException;
 import com.cts.stockmanagementexceptions.StockNotFoundException;
+import com.cts.stockmanagementmodel.OverAllStock;
+import com.cts.stockmanagementmodel.QuantityDTO;
 import com.cts.stockmanagementmodel.Stock;
 import com.cts.stockmanagementmodel.StockDTO;
 import com.cts.stockmanagementrepository.StockManagementRepository;
@@ -38,11 +41,11 @@ public class StockManagementServiceImpl implements StockManagementService {
         }
         
         Stock stock = getStockByProductId(productId);
-//        QuantityDTO quantityDTO = new QuantityDTO();
+        QuantityDTO quantityDTO = new QuantityDTO();
         int updatedQuantity=stock.getQuantity() + amount;
-//        quantityDTO.setQuantity(updatedQuantity);
+        quantityDTO.setQuantity(updatedQuantity);
         stock.setQuantity(updatedQuantity);
-//        pClient.updateQuantity(quantityDTO); // Blocking call
+        pClient.updateQuantity(quantityDTO); // Blocking call
         return stockRepository.save(stock); // Blocking call
     }
 
@@ -56,9 +59,9 @@ public class StockManagementServiceImpl implements StockManagementService {
             throw new InsufficientStockException("Insufficient stock for product ID: " + productId
                     + ". Available: " + stock.getQuantity() + ", Required: " + amount);
         }
-//        QuantityDTO quantityDTO = new QuantityDTO();
-//        quantityDTO.setQuantity(stock.getQuantity() - amount);
-//        pClient.updateQuantity(quantityDTO); // Blocking call
+        QuantityDTO quantityDTO = new QuantityDTO();
+        quantityDTO.setQuantity(stock.getQuantity() - amount);
+        pClient.updateQuantity(quantityDTO); // Blocking call
         stock.setQuantity(stock.getQuantity() - amount);
         return stockRepository.save(stock); // Blocking call
     }
@@ -74,29 +77,29 @@ public class StockManagementServiceImpl implements StockManagementService {
     }
     
     
-//    @Override
-//    public String save() {
-//        List<OverAllStock> overAllStocks = pClient.getAllProductsStocks(); // Blocking call
-//        
-//        List<Stock> newStocks = overAllStocks.stream()
-//            .map(overAllStock -> {
-//                Stock stock = new Stock();
-//                stock.setProductID(overAllStock.getProductID());
-//                stock.setName(overAllStock.getName());
-//                stock.setQuantity(overAllStock.getQuantity());
-//                stock.setReorderLevel(20);
-//                return stock;
-//            })
-//            .collect(Collectors.toList());
-//
-//        stockRepository.saveAll(newStocks); // Blocking call
-//        return "Saved successfully";
-//    }
-    
-    public String save(Stock stock) {
-       	stockRepository.save(stock);
-    	return "saved";
+    @Override
+    public String save() {
+        List<OverAllStock> overAllStocks = pClient.getAllProductsStocks(); // Blocking call
+        
+        List<Stock> newStocks = overAllStocks.stream()
+            .map(overAllStock -> {
+                Stock stock = new Stock();
+                stock.setProductID(overAllStock.getProductID());
+                stock.setName(overAllStock.getName());
+                stock.setQuantity(overAllStock.getQuantity());
+                stock.setReorderLevel(20);
+                return stock;
+            })
+            .collect(Collectors.toList());
+
+        stockRepository.saveAll(newStocks); // Blocking call
+        return "Saved successfully";
     }
+    
+//    public String save(Stock stock) {
+//       	stockRepository.save(stock);
+//    	return "saved";
+//    }
 
 
 }

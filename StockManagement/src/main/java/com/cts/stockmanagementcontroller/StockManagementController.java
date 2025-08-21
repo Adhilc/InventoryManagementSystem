@@ -30,8 +30,8 @@ public class StockManagementController {
     }
     
     @PostMapping("/save")
-    public String save(@RequestBody Stock stock) {
-    	stockManagementService.save(stock);
+    public String save() {
+    	stockManagementService.save();
     	return "Saved successfully";
     	
     	

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.cts.stockmanagementmodel.OverAllStock;
 import com.cts.stockmanagementmodel.QuantityDTO;
@@ -15,7 +15,7 @@ public interface ProductManagementClient {
 	@GetMapping("/getAll")
 	List<OverAllStock> getAllProductsStocks();
 	
-	@PutMapping("/updateQuantity")
+	@PostMapping("/updateQuantity")
 	String updateQuantity(QuantityDTO quantityDTO);
 	
 }
