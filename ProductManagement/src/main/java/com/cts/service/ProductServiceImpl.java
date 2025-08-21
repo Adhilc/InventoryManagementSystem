@@ -61,7 +61,6 @@ public class ProductServiceImpl implements ProductService {
 		// Call the stock management microservice to create the stock entry
 		logger.info("Calling stock management microservice to save stock for product ID: {}", product.getProductID());
 		sClient.saveStock(stockDto);
-		sClient.save(stockDto);
 		logger.info("Stock entry successfully created for product ID: {}", product.getProductID());
 
 		Product savedProduct = repo.save(product);

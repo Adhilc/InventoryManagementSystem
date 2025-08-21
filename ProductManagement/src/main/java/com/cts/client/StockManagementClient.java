@@ -31,6 +31,5 @@ public interface StockManagementClient {
 	 *
 	 * @param stockDto The data transfer object containing the stock information to be saved.
 	 */
-	@PostMapping("/save")
-	void save(@RequestBody StockDTO stockDto);
+
 }
