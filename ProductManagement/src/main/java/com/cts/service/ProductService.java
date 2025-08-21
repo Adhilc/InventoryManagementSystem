@@ -9,7 +9,6 @@ import com.cts.model.OverAllStock;
 import com.cts.model.Product;
 import com.cts.model.ProductDTO;
 import com.cts.model.QuantityDTO;
-import com.cts.model.StockDTO;
 
 /**
  * Defines the contract for the business logic layer for product-related
@@ -79,8 +78,9 @@ public interface ProductService {
 	public List<Product> getProductsBetweenPriceRange(int initial, int fina);
 
 	/**
-	 * Retrieves the name of a product by its ID. * @param id The ID of the product.
-	 * 
+	 * Retrieves the name of a product by its ID.
+	 *
+	 * @param id The ID of the product.
 	 * @return The name of the product as a String.
 	 * @throws ProductNotFound if no product with the specified ID is found.
 	 */
@@ -110,6 +110,12 @@ public interface ProductService {
 	 */
 	public String updateQuantity(QuantityDTO quantityDTO);
 
+	/**
+	 * Checks if a product with the given ID exists in the system.
+	 *
+	 * @param id The ID of the product to check.
+	 * @return The stock level of the product if it exists; otherwise, -1.
+	 */
 	public int checkProductId(int id);
 
 }
