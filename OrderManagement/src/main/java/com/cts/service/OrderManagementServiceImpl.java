@@ -1,6 +1,6 @@
 package com.cts.service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -53,10 +53,11 @@ public class OrderManagementServiceImpl implements OrderManagementService {
 
 		Order order = new Order();
 		order.setProductId(product.getProductId());
-		order.setOrderDate(LocalDateTime.now());
-		order.setStatus("Pending");
+		// Set the order date to the current date
+		order.setOrderDate(LocalDate.now()); // Changed from LocalDateTime.of(today, endOfDay)
 		order.setQuantity(product.getQuantity());
 		order.setCustomerId(customerIdCounter.getAndIncrement());
+		order.setStatus("Pending"); // Setting a default status here is better practice
 
 		int result = pClient.checkProductId(product.getProductId());
 		log.info(result+"");
@@ -118,24 +119,23 @@ public class OrderManagementServiceImpl implements OrderManagementService {
 	 * Retrieves an order report for a specific date range. It first validates the
 	 * date range against the earliest and latest order dates in the database to
 	 * ensure the request is valid.
-	 * 
-	 * @param orderReport The DTO containing the start and end dates.
+	 * * @param orderReport The DTO containing the start and end dates.
 	 * @return A ResponseEntity with a list of OrderReportSent objects.
 	 * @throws DateNotFoundException if no orders are found within the specified
-	 *                               date range.
+	 * date range.
 	 */
 	@Override
 	public ResponseEntity<List<OrderReportSent>> getDetailsByDate(OrderReport orderReport)throws DateNotFoundException {
-		LocalDateTime startDate=orderReport.getStartDate();
-		LocalDateTime endDate=orderReport.getEndDate();
+		LocalDate startDate=orderReport.getStartDate(); // Changed from LocalDateTime
+		LocalDate endDate=orderReport.getEndDate(); // Changed from LocalDateTime
 		// Add validation to check if the requested date range is within the available data
 		// This requires querying for the minimum and maximum order dates in the table.
-		Optional<LocalDateTime> minDateOpt = repo.findFirstByOrderByOrderDateAsc().map(Order::getOrderDate);
-		Optional<LocalDateTime> maxDateOpt = repo.findFirstByOrderByOrderDateDesc().map(Order::getOrderDate);
+		Optional<Order> minDateOpt = repo.findFirstByOrderByOrderDateAsc();
+		Optional<Order> maxDateOpt = repo.findFirstByOrderByOrderDateDesc();
  
 		if (minDateOpt.isPresent() && maxDateOpt.isPresent()) {
-			LocalDateTime minDate = minDateOpt.get();
-			LocalDateTime maxDate = maxDateOpt.get();
+			LocalDate minDate = minDateOpt.get().getOrderDate();
+			LocalDate maxDate = maxDateOpt.get().getOrderDate();
  
 			if (startDate.isBefore(minDate) || endDate.isAfter(maxDate)) {
 				throw new DateNotFoundException("Requested date range is outside the available data range. Available data is from " + minDate + " to " + maxDate + ".");
@@ -147,8 +147,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
 
 	/**
 	 * Updates the status of an existing order.
-	 * 
-	 * @param orderId The ID of the order to update.
+	 * * @param orderId The ID of the order to update.
 	 * @param status  The new status for the order.
 	 * @return A success message upon successful update.
 	 * @throws OrderNotFoundException if the order with the given ID does not exist.

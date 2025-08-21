@@ -30,7 +30,6 @@ public class AuthService {
 			throw new BadCredentialsException("Invalid password");
 		}
 
-		// Corrected: Changed static calls to instance calls
 		return jwtUtil.generateToken(user.getUsername(), user.getRole());
 	}
 
