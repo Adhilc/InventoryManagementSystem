@@ -1,7 +1,6 @@
 package com.cts.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,7 +17,18 @@ import lombok.NoArgsConstructor;
 */
 public class OrderReportSent {
 
+	/**
+	 * The unique identifier for the product included in the order.
+	 */
 	private int productId;
-	private LocalDate date; // Changed from LocalDateTime
+
+	/**
+	 * The date when the order was placed.
+	 */
+	private LocalDate date;
+
+	/**
+	 * The number of units of the product ordered.
+	 */
 	private int quantity;
 }

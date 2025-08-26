@@ -19,12 +19,12 @@ import lombok.NoArgsConstructor;
 public class OrderReport {
 
 	/**
-	 * The start date for the report period (inclusive).
+	 * The start date for the report period.
 	 */
-	private LocalDate startDate; // Changed from LocalDateTime
+	private LocalDate startDate; 
 
 	/**
-	 * The end date for the report period (inclusive).
+	 * The end date for the report period.
 	 */
-	private LocalDate endDate; // Changed from LocalDateTime
+	private LocalDate endDate;
 }

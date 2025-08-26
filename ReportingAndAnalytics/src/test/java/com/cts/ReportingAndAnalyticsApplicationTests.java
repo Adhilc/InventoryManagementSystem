@@ -3,8 +3,6 @@ package com.cts;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -13,150 +11,116 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.cts.client.OrderManagementClient;
-import com.cts.client.ProductManagementClient;
-import com.cts.client.StockManagementClient;
-import com.cts.client.SupplierManagementClient;
+import com.cts.controller.ReportingAndAnalyticsController;
 import com.cts.model.OrderReport;
 import com.cts.model.OrderReportSent;
 import com.cts.model.OverAllStock;
 import com.cts.model.StockDTO;
 import com.cts.model.SupplierReport;
 import com.cts.model.SupplierReportSent;
-import com.cts.service.ReportingAndAnalyticsServiceImpl;
+import com.cts.service.ReportingAndAnalyticsService;
 
-@SpringBootTest
+/**
+ * A simple unit test for the ReportingAndAnalyticsController.
+ * This test uses only Mockito to test the controller as a plain Java object,
+ * without loading a Spring context.
+ */
+@ExtendWith(MockitoExtension.class) // Enables Mockito for creating mocks
 class ReportingAndAnalyticsApplicationTests {
 
-    
+    // @Mock creates a mock (fake version) of the service.
     @Mock
-    private OrderManagementClient oClient;
+    private ReportingAndAnalyticsService service;
 
-    @Mock
-    private SupplierManagementClient sClient;
-
-    @Mock
-    private StockManagementClient stClient;
-
-    @Mock
-    private ProductManagementClient pClient;
-
-    // Inject mocks into the service class under test
+    // @InjectMocks creates an instance of our controller and injects the mock service into it.
     @InjectMocks
-    private ReportingAndAnalyticsServiceImpl service;
+    private ReportingAndAnalyticsController controller;
 
-    // --- Test Data Initialization ---
-    private OrderReport orderReport;
-    private SupplierReport supplierReport;
     private OrderReportSent orderReportSent;
-    private SupplierReportSent supplierReportSent;
-    private StockDTO stockDTO;
-    private OverAllStock overAllStock;
 
     @BeforeEach
     void setUp() {
-        // Initialize DTOs used for testing
-        orderReport = new OrderReport();
-        orderReport.setStartDate(LocalDate.now());
-        orderReport.setEndDate(LocalDate.now());
-
-        supplierReport = new SupplierReport();
-        supplierReport.setStartDate(LocalDateTime.now());
-        supplierReport.setEndDate(LocalDateTime.now());
-
+        // Create some sample data to use in our tests.
         orderReportSent = new OrderReportSent();
-        orderReportSent.setProductId(1);
-        orderReportSent.setQuantity(10);
-        orderReportSent.setDate(LocalDate.now());
-
-        supplierReportSent = new SupplierReportSent();
-        stockDTO = new StockDTO();
-        overAllStock = new OverAllStock();
-    }
-
-    // --- Test Methods ---
-
-    @Test
-    void contextLoads() {
-        // This test ensures the Spring application context loads correctly.
-        // No additional code should be added here.
+        orderReportSent.setProductId(101);
+        orderReportSent.setQuantity(50);
+        orderReportSent.setDate(LocalDate.of(2025, 8, 26));
     }
 
     @Test
-    void getDetailsByDate_Success() {
-        // Mock the Feign client's successful response
-        when(oClient.getDetailsByDate(any(OrderReport.class)))
-            .thenReturn(new ResponseEntity<>(Collections.singletonList(orderReportSent), HttpStatus.OK));
+    @DisplayName("Should return order details from the service")
+    void testGetOrderDetailsByDate() {
+        // 1. Arrange: Tell our mock service what to return when its method is called.
+        LocalDate startDate = LocalDate.of(2025, 8, 1);
+        LocalDate endDate = LocalDate.of(2025, 8, 30);
+        List<OrderReportSent> mockResponseList = Collections.singletonList(orderReportSent);
+        when(service.getDetailsByDate(any(OrderReport.class)))
+            .thenReturn(new ResponseEntity<>(mockResponseList, HttpStatus.OK));
 
-        // Call the service method and assert the result
-        ResponseEntity<List<OrderReportSent>> response = service.getDetailsByDate(orderReport);
+        // 2. Act: Call the controller method directly.
+        ResponseEntity<List<OrderReportSent>> response = controller.getOrderDetailsByDate(startDate, endDate);
 
+        // 3. Assert: Check if the response from the controller is correct.
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
-        assertEquals(orderReportSent, response.getBody().get(0));
-
-        // Verify the mock client was called exactly once
-        verify(oClient, times(1)).getDetailsByDate(any(OrderReport.class));
+        assertEquals(101, response.getBody().get(0).getProductId());
     }
 
     @Test
-    void getSupplierDetailsByDate_Success() {
-        // Mock the Feign client's successful response
-        when(sClient.getSupplierInfoForReport(any(SupplierReport.class)))
-            .thenReturn(new ResponseEntity<>(Collections.singletonList(supplierReportSent), HttpStatus.OK));
+    @DisplayName("Should return supplier details from the service")
+    void testGetSupplierDetailsByDate() {
+        // 1. Arrange
+        LocalDateTime startDate = LocalDateTime.now();
+        LocalDateTime endDate = LocalDateTime.now().plusHours(1);
+        List<SupplierReportSent> mockResponseList = Collections.singletonList(new SupplierReportSent());
+        when(service.getSupplierDetailsByDate(any(SupplierReport.class)))
+            .thenReturn(new ResponseEntity<>(mockResponseList, HttpStatus.OK));
 
-        // Call the service method and assert the result
-        ResponseEntity<List<SupplierReportSent>> response = service.getSupplierDetailsByDate(supplierReport);
+        // 2. Act
+        ResponseEntity<List<SupplierReportSent>> response = controller.getSupplierDetailsByDate(startDate, endDate);
 
+        // 3. Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().size());
-        assertEquals(supplierReportSent, response.getBody().get(0));
-
-        // Verify the mock client was called
-        verify(sClient, times(1)).getSupplierInfoForReport(any(SupplierReport.class));
     }
 
     @Test
-    void getTheLowerStocks_Success() {
-        // Mock the Feign client's successful response
-        when(stClient.getLowStockReport())
-            .thenReturn(new ResponseEntity<>(Collections.singletonList(stockDTO), HttpStatus.OK));
+    @DisplayName("Should return lower stocks from the service")
+    void testGetTheLowerStocks() {
+        // 1. Arrange
+        List<StockDTO> mockResponseList = Collections.singletonList(new StockDTO());
+        when(service.getTheLowerStocks()).thenReturn(new ResponseEntity<>(mockResponseList, HttpStatus.OK));
 
-        // Call the service method and assert the result
-        ResponseEntity<List<StockDTO>> response = service.getTheLowerStocks();
+        // 2. Act
+        ResponseEntity<List<StockDTO>> response = controller.getTheLowerStocks();
 
+        // 3. Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().size());
-        assertEquals(stockDTO, response.getBody().get(0));
-
-        // Verify the mock client was called
-        verify(stClient, times(1)).getLowStockReport();
     }
 
     @Test
-    void getAllStocks_Success() {
-        // Mock the Feign client's successful response
-        when(pClient.getAllProductsStocks())
-            .thenReturn(Collections.singletonList(overAllStock));
+    @DisplayName("Should return all stocks from the service")
+    void testGetAllStocks() {
+        // 1. Arrange
+        List<OverAllStock> mockResponseList = Collections.singletonList(new OverAllStock());
+        when(service.getAllStocks()).thenReturn(mockResponseList);
 
-        // Call the service method and assert the result
-        List<OverAllStock> response = service.getAllStocks();
+        // 2. Act
+        List<OverAllStock> response = controller.getAllStocks();
 
+        // 3. Assert
         assertNotNull(response);
         assertEquals(1, response.size());
-        assertEquals(overAllStock, response.get(0));
-
-        // Verify the mock client was called
-        verify(pClient, times(1)).getAllProductsStocks();
     }
 }

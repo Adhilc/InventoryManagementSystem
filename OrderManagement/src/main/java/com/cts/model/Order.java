@@ -1,7 +1,6 @@
 package com.cts.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -59,13 +58,13 @@ public class Order {
 
 	/**
 	 * The date the order was placed.
-	 * Stored as a LocalDate to capture the date without time-of-day information.
+	 * Stored as a LocalDate to capture the date.
 	 */
 	private LocalDate orderDate; 
 
 	/**
 	 * The current status of the order.
-	 * For example: "PENDING", "SHIPPED", "DELIVERED", "CANCELLED".
+	 * For example: "PENDING", "ACCEPTED", "DELIVERED", "CANCELLED".
 	 */
 	private String status;
 }

@@ -75,7 +75,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
 		// 2. Create and populate a new Order entity.
 		Order order = new Order();
 		order.setProductId(product.getProductId());
-		order.setOrderDate(LocalDate.now()); // Changed from LocalDateTime.of(today, endOfDay)
+		order.setOrderDate(LocalDate.now()); 
 		order.setQuantity(product.getQuantity());
 		order.setCustomerId(customerIdCounter.getAndIncrement());
 		order.setStatus("Pending"); // Setting a default status here is better practice
@@ -94,7 +94,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
 
 		// 5. Call StockManagement microservice via Feign client to decrease the stock.
 		ResponseEntity<Stock> response = sClient.decreaseStockFromOrder(productDto);
-
+		log.info(response+"");
 		// 6. If all remote calls are successful, update order status to Accepted.
 		order.setStatus("Accepted");
 
@@ -169,8 +169,8 @@ public class OrderManagementServiceImpl implements OrderManagementService {
 	 */
 	@Override
 	public ResponseEntity<List<OrderReportSent>> getDetailsByDate(OrderReport orderReport)throws DateNotFoundException {
-		LocalDate startDate=orderReport.getStartDate(); // Changed from LocalDateTime
-		LocalDate endDate=orderReport.getEndDate(); // Changed from LocalDateTime
+		LocalDate startDate=orderReport.getStartDate(); 
+		LocalDate endDate=orderReport.getEndDate(); 
 		
 		// Validate the requested date range against the available data in the database.
 		Optional<Order> minDateOpt = repo.findFirstByOrderByOrderDateAsc();

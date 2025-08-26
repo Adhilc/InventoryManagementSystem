@@ -22,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.cts.client.ProductManagementClient;
 import com.cts.client.StockManagementClient;
 import com.cts.exception.DataNotFoundException;
 import com.cts.exception.DateNotFoundException;
@@ -42,111 +43,190 @@ class OrderManagementServiceImplTest {
 
     @Mock
     private StockManagementClient sClient;
+    
+    @Mock
+    private ProductManagementClient pClient;
 
     @InjectMocks
     private OrderManagementServiceImpl service;
 
     private Product product;
     private Order order;
-    private OrderReport orderReport;
 
     @BeforeEach
     void setUp() {
         // Initialize common test data
         product = new Product(1, 10);
-        
-        // Corrected Order constructor to use LocalDate instead of LocalDateTime
         order = new Order(1, 101, 1, 10, LocalDate.now(), "Pending");
+    }
+    
+    // Tests the successful creation of an order.
+    @Test
+    void testCreateOrder_Success() throws DataNotFoundException {
+        // Arrange
         
-        // Corrected OrderReport constructor to use LocalDate instead of LocalDateTime
-        orderReport = new OrderReport(LocalDate.now().minusDays(1), LocalDate.now());
+        Stock stock = new Stock(product.getProductId(), 90, 10);
+        ResponseEntity<Stock> stockResponse = new ResponseEntity<>(stock, HttpStatus.OK);
+        
+        // Mock the Feign client calls and repository save
+        when(pClient.checkProductId(product.getProductId())).thenReturn(100); // Assume 100 items are available(quantity)
+        when(sClient.decreaseStockFromOrder(any(ProductDTO.class))).thenReturn(stockResponse);
+        when(repo.save(any(Order.class))).thenReturn(order);
+        
+        // Act
+        ResponseEntity<String> response = service.createOrder(product);
+        
+        // Assert
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals("Saved succesfully", response.getBody());
+        
+        // Verify that the external services and repository were called
+        verify(pClient, times(1)).checkProductId(product.getProductId());
+        verify(sClient, times(1)).decreaseStockFromOrder(any(ProductDTO.class));
+        verify(repo, times(1)).save(any(Order.class));
     }
 
-   
-
+    // Tests that an exception is thrown for invalid product data.
     @Test
-    void createOrder_InvalidData_ThrowsException() {
-        Product invalidProduct = new Product(0, -1);
+    void testCreateOrder_InvalidData_ThrowsException() {
+        // Arrange
+        Product invalidProduct = new Product(1, 0); // Invalid quantity
         
-        assertThrows(DataNotFoundException.class, () -> service.createOrder(invalidProduct));
+        // Act & Assert
+        assertThrows(DataNotFoundException.class, () -> {
+            service.createOrder(invalidProduct);
+        });
         
+        // Verify that no external calls were made
+        verify(pClient, never()).checkProductId(any(Integer.class));
         verify(sClient, never()).decreaseStockFromOrder(any());
         verify(repo, never()).save(any());
     }
-
-    // --- getDetailsByOrderId Tests ---
+    
+    // Tests that an exception is thrown when the product is not found.
     @Test
-    void getDetailsByOrderId_Found_ReturnsOrder() throws OrderNotFoundException {
+    void testCreateOrder_ProductNotFound_ThrowsException() {
+        // Arrange
+        when(pClient.checkProductId(product.getProductId())).thenReturn(-1);
+        
+        // Act & Assert
+        assertThrows(DataNotFoundException.class, () -> {
+            service.createOrder(product);
+        });
+    }
+    
+    // Tests that an exception is thrown when the available stock is insufficient.
+    @Test
+    void testCreateOrder_InsufficientStock_ThrowsException() {
+        // Arrange
+        when(pClient.checkProductId(product.getProductId())).thenReturn(5); // Only 5 in stock, but 10 are ordered
+        
+        // Act & Assert
+        assertThrows(DataNotFoundException.class, () -> {
+            service.createOrder(product);
+        });
+    }
+
+    // Tests retrieving an order by its ID when it exists.
+    @Test
+    void testGetDetailsByOrderId_Found_ReturnsOrder() throws OrderNotFoundException {
+        // Arrange
         when(repo.findByOrderId(order.getOrderId())).thenReturn(Optional.of(order));
 
+        // Act
         ResponseEntity<Order> response = service.getDetailsByOrderId(order.getOrderId());
 
+        // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(order, response.getBody());
     }
 
+    // Tests retrieving an order by an ID that does not exist.
     @Test
-    void getDetailsByOrderId_NotFound_ThrowsException() {
+    void testGetDetailsByOrderId_NotFound_ThrowsException() {
+        // Arrange
         when(repo.findByOrderId(99)).thenReturn(Optional.empty());
 
-        assertThrows(OrderNotFoundException.class, () -> service.getDetailsByOrderId(99));
+        // Act & Assert
+        assertThrows(OrderNotFoundException.class, () -> {
+            service.getDetailsByOrderId(99);
+        });
     }
 
-    // --- getDetailsByCustomerId Tests ---
+    // Tests retrieving orders for a customer who has placed orders.
     @Test
-    void getDetailsByCustomerId_Found_ReturnsOrderList() throws OrderNotFoundException {
+    void testGetDetailsByCustomerId_Found_ReturnsOrderList() throws OrderNotFoundException {
+        // Arrange
         List<Order> orders = Collections.singletonList(order);
         when(repo.findByCustomerId(order.getCustomerId())).thenReturn(orders);
 
+        // Act
         ResponseEntity<List<Order>> response = service.getDetailsByCustomerId(order.getCustomerId());
 
+        // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(orders, response.getBody());
     }
 
+    // Tests retrieving orders for a customer ID that has no orders.
     @Test
-    void getDetailsByCustomerId_NotFound_ThrowsException() {
+    void testGetDetailsByCustomerId_NotFound_ThrowsException() {
+        // Arrange
         when(repo.findByCustomerId(99)).thenReturn(Collections.emptyList());
 
-        assertThrows(OrderNotFoundException.class, () -> service.getDetailsByCustomerId(99));
+        // Act & Assert
+        assertThrows(OrderNotFoundException.class, () -> {
+            service.getDetailsByCustomerId(99);
+        });
     }
 
+    // Tests that an exception is thrown if the requested report date range is invalid.
     @Test
-    void getDetailsByDate_RequestedDateOutsideAvailableRange_ThrowsException() {
-        // Setup mock to return a limited date range
+    void testGetDetailsByDate_RequestedDateOutsideAvailableRange_ThrowsException() {
+        // Arrange
         Order oldestOrder = new Order();
-        oldestOrder.setOrderDate(LocalDate.now().minusDays(10)); // Use LocalDate
-        
+        oldestOrder.setOrderDate(LocalDate.now().minusDays(10));
         Order newestOrder = new Order();
-        newestOrder.setOrderDate(LocalDate.now().minusDays(5)); // Use LocalDate
-
+        newestOrder.setOrderDate(LocalDate.now().minusDays(5));
+        
         when(repo.findFirstByOrderByOrderDateAsc()).thenReturn(Optional.of(oldestOrder));
         when(repo.findFirstByOrderByOrderDateDesc()).thenReturn(Optional.of(newestOrder));
+        
+        OrderReport reportRequest = new OrderReport(LocalDate.now().minusDays(20), LocalDate.now());
 
-        // Create a report request outside this range
-        OrderReport report = new OrderReport(LocalDate.now().minusDays(20), LocalDate.now()); // Use LocalDate
-
-        assertThrows(DateNotFoundException.class, () -> service.getDetailsByDate(report));
+        // Act & Assert
+        assertThrows(DateNotFoundException.class, () -> {
+            service.getDetailsByDate(reportRequest);
+        });
     }
 
-    // --- updateStatus Tests ---
+    // Tests the successful update of an order's status.
     @Test
-    void updateStatus_Success() throws OrderNotFoundException {
-        Order existingOrder = new Order(1, 101, 1, 5, LocalDate.now(), "Pending"); // Use LocalDate
+    void testUpdateStatus_Success() throws OrderNotFoundException {
+        // Arrange
+        Order existingOrder = new Order(1, 101, 1, 5, LocalDate.now(), "Pending");
         when(repo.findByOrderId(1)).thenReturn(Optional.of(existingOrder));
 
+        // Act
         String result = service.updateStatus(1, "Shipped");
 
+        // Assert
         assertEquals("Successfully Updated status", result);
-        verify(repo, times(1)).save(existingOrder);
         assertEquals("Shipped", existingOrder.getStatus());
+        verify(repo, times(1)).save(existingOrder);
     }
 
+    // Tests updating a status for an order that does not exist.
     @Test
-    void updateStatus_OrderNotFound_ThrowsException() {
+    void testUpdateStatus_OrderNotFound_ThrowsException() {
+        // Arrange
         when(repo.findByOrderId(99)).thenReturn(Optional.empty());
 
-        assertThrows(OrderNotFoundException.class, () -> service.updateStatus(99, "Shipped"));
+        // Act & Assert
+        assertThrows(OrderNotFoundException.class, () -> {
+            service.updateStatus(99, "Shipped");
+        });
+        
         verify(repo, never()).save(any(Order.class));
     }
 }
