@@ -76,11 +76,6 @@ public class OrderManagementController {
 	}
 	
 	/**
- 	 * Corrected Endpoint: This endpoint now uses a POST request with `@RequestBody`
- 	 * to receive an `OrderReport` object. This is a much cleaner and more robust way
- 	 * to send complex objects or sensitive data to an endpoint, as it avoids URL-related issues.
- 	 * Although it's a GET operation semantically, many developers use POST for queries with a body.
- 	 * A GET with a request body is not standard, so POST is a pragmatic choice here.
  	 * @param orderReport The `OrderReport` DTO containing the start and end dates.
  	 * @return A ResponseEntity with a list of OrderReportSent objects.
  	 * @throws DateNotFoundException if no orders are found within the date range.

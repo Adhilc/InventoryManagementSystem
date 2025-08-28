@@ -11,7 +11,6 @@ import com.cts.model.Order;
 import com.cts.model.OrderReport;
 import com.cts.model.OrderReportSent;
 import com.cts.model.Product;
-import com.cts.model.ProductDTO;
 
 public interface OrderManagementService {
 	

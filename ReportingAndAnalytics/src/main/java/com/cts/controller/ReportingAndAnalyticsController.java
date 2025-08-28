@@ -32,7 +32,7 @@ public class ReportingAndAnalyticsController {
 	}
 	@GetMapping("/getByDate/order/{startDate}/{endDate}")
 	public ResponseEntity<List<OrderReportSent>> getOrderDetailsByDate(@PathVariable LocalDate startDate,@PathVariable LocalDate endDate){
-			
+		log.info("Fetching order report from {} to {}", startDate, endDate);
 		OrderReport orderReport = new OrderReport();
 		orderReport.setStartDate(startDate);
 		orderReport.setEndDate(endDate);
@@ -50,13 +50,13 @@ public class ReportingAndAnalyticsController {
 	
 	@GetMapping("/getTheLowerStocks")
 	public ResponseEntity<List<StockDTO>> getTheLowerStocks() {
-		
+		log.info("Fetching list of lower stock items");
 		return service.getTheLowerStocks();
 	}
 	
 	@GetMapping("/getAllStocks")
 	public List<OverAllStock> getAllStocks(){
-		
+		log.info("Fetching complete stock inventory");
 		return service.getAllStocks();
 	}
 }

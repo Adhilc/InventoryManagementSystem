@@ -2,7 +2,6 @@ package com.cts.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -38,32 +37,31 @@ public class ReportingAndAnalyticsServiceImpl implements ReportingAndAnalyticsSe
 
 	@Override
 	public ResponseEntity<List<OrderReportSent>> getDetailsByDate(OrderReport orderReport) {
-
-		ResponseEntity<List<OrderReportSent>> response = oClient.getDetailsByDate(orderReport);
-		return response;
+         log.info("Fetching order details for date range:{}",orderReport);
+		return oClient.getDetailsByDate(orderReport);
 	}
 
 	@Override
 	public ResponseEntity<List<SupplierReportSent>> getSupplierDetailsByDate(SupplierReport supplierReport) {
 		log.info("Report Object:" + supplierReport);
 
-		ResponseEntity<List<SupplierReportSent>> response = sClient.getSupplierInfoForReport(supplierReport);
-		return response;
+		return sClient.getSupplierInfoForReport(supplierReport);
 	}
 
 	@Override
 	public ResponseEntity<List<StockDTO>> getTheLowerStocks() {
 
-		ResponseEntity<List<StockDTO>> response = stClient.getLowStockReport();
-		return response;
+		log.info("Fetching low stock report from StockManagementClient");
+	 
+		return stClient.getLowStockReport();
 	}
 
 	@Override
 	public List<OverAllStock> getAllStocks() {
 
-		List<OverAllStock> response = pClient.getAllProductsStocks();
+		log.info("Fetching overall stock information from ProductManagementClient");
 
-		return response;
+		return pClient.getAllProductsStocks();
 	}
 
 }

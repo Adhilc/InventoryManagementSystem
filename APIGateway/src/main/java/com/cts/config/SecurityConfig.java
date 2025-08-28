@@ -26,12 +26,19 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
+                        // Public endpoints
                         .pathMatchers("/auth/login", "/auth/register").permitAll()
-                        .pathMatchers(HttpMethod.POST, "/api/order/save").hasRole("USER")
+                        
+                        // Endpoints for both USER and ADMIN
+                        .pathMatchers(HttpMethod.POST, "/api/order/save").hasAnyRole("USER", "ADMIN")
+                        .pathMatchers(HttpMethod.GET, "/api/order/getByOrderId/{id}").hasAnyRole("USER", "ADMIN")
+                        
+                        // All other endpoints are for ADMIN only
                         .anyExchange().hasRole("ADMIN")
-                    )
+                )
                 .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION).build();
     }
+    
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
