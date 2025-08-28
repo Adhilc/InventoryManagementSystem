@@ -4,8 +4,6 @@ public class StockDTO {
 	private int productID;
 	private String name;
 	private int quantity;
-	
-	
 	public int getProductID() {
 		return productID;
 	}
@@ -33,7 +31,4 @@ public class StockDTO {
 	public StockDTO() {
 		super();
 	}
-	
-	
-
 }

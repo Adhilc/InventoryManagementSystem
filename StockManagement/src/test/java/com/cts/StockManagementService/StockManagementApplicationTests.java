@@ -20,7 +20,6 @@ import com.cts.client.ProductManagementClient;
 import com.cts.stockmanagementexceptions.InsufficientStockException;
 import com.cts.stockmanagementexceptions.InvalidStockAmountException;
 import com.cts.stockmanagementexceptions.StockNotFoundException;
-import com.cts.stockmanagementmodel.OverAllStock;
 import com.cts.stockmanagementmodel.Stock;
 import com.cts.stockmanagementmodel.StockDTO;
 import com.cts.stockmanagementrepository.StockManagementRepository;
@@ -169,30 +168,4 @@ class StockManagementServiceImplTest {
         verify(stockRepository, times(1)).sendLowStockItems();
     }
 
-    // --- Test for save() method ---
-
-//    @Test
-//    void whenSave_thenCallsFeignClientAndSavesToRepository() {
-//        // Arrange: Create a mock list of OverAllStock objects
-//        OverAllStock mockOverAllStock = new OverAllStock();
-//        mockOverAllStock.setProductID(201);
-//        mockOverAllStock.setName("Client Product");
-//        mockOverAllStock.setQuantity(100);
-//        List<OverAllStock> mockStocks = Collections.singletonList(mockOverAllStock);
-//        
-//        // Configure the Feign client mock to return the list
-//        when(pClient.getAllProductsStocks()).thenReturn(mockStocks);
-//
-//        // Act
-//        String result = stockManagementService.save();
-//
-//        // Assert
-//        assertEquals("saved successfully", result);
-//        
-//        // Verify that the Feign client method was called once
-//        verify(pClient, times(1)).getAllProductsStocks();
-//        
-//        // Verify that the repository's save method was called once with the correct Stock object
-//        verify(stockRepository, times(1)).save(any(Stock.class));
-//    }
 }
