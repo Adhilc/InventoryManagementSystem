@@ -32,6 +32,7 @@ public class SecurityConfig {
                         // Endpoints for both USER and ADMIN
                         .pathMatchers(HttpMethod.POST, "/api/order/save").hasAnyRole("USER", "ADMIN")
                         .pathMatchers(HttpMethod.GET, "/api/order/getByOrderId/{id}").hasAnyRole("USER", "ADMIN")
+                        .pathMatchers(HttpMethod.GET, "api/product/viewAllAvailable").hasAnyRole("USER","ADMIN")
                         
                         // All other endpoints are for ADMIN only
                         .anyExchange().hasRole("ADMIN")
