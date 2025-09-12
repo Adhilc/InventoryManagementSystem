@@ -216,4 +216,11 @@ public class OrderManagementServiceImpl implements OrderManagementService {
 		return "Successfully Updated status";
 	}
 
+	@Override
+	public ResponseEntity<List<Order>> getAllOrders() {
+		// TODO Auto-generated method stub
+		List<Order>orders=repo.findAll();
+		return new ResponseEntity<>(orders,HttpStatus.OK);
+	}
+
 }
