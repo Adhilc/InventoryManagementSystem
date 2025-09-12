@@ -53,8 +53,8 @@ public interface OrderManagementRepository extends JpaRepository<Order,Integer> 
 	       "FROM Order o " +
 	       "WHERE o.orderDate BETWEEN :startDate AND :endDate")
 	List<OrderReportSent> findOrderReportByDateBetween(
-	    @Param("startDate") LocalDate startDate, // Changed from LocalDateTime
-	    @Param("endDate") LocalDate endDate // Changed from LocalDateTime
+	    @Param("startDate") LocalDate startDate, 
+	    @Param("endDate") LocalDate endDate 
 	);
 
 	/**

@@ -23,4 +23,6 @@ public interface OrderManagementService {
 	ResponseEntity<List<OrderReportSent>> getDetailsByDate(OrderReport orderReport) throws DateNotFoundException;
 
 	String updateStatus(int orderId, String status) throws OrderNotFoundException;
+
+	ResponseEntity<List<Order>> getAllOrders();
 }
