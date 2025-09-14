@@ -9,5 +9,8 @@ import com.cts.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-	Optional<User> findByUsername(String username);
+    Optional<User> findByUsername(String username);
+
+    // NEW: simple existence check used during registration
+    boolean existsByUsername(String username);
 }
