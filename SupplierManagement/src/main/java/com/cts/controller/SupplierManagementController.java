@@ -1,42 +1,47 @@
 package com.cts.controller;
-
+ 
 import java.util.List;
-
+import java.util.Optional;
+ 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+ 
 import com.cts.exceptions.ReportNotFound;
 import com.cts.exceptions.SupplierNotFound;
 import com.cts.model.Supplier;
 import com.cts.model.SupplierReport;
 import com.cts.model.SupplierReportSent;
 import com.cts.service.SupplierService;
-
+ 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-
+ 
 /**
- * REST controller for managing supplier-related operations. This class handles
- * incoming HTTP requests for adding new suppliers, retrieving supplier
- * information, and generating reports. * @RestController Marks this class as a
- * REST controller. @RequestMapping("/api/supplier/") Specifies the base URL
- * path for all endpoints in this controller.
- * 
- * @Slf4j A Lombok annotation to automatically create a SLF4J logger field.
- */
+* REST controller for managing supplier-related operations. This class handles
+* incoming HTTP requests for adding new suppliers, retrieving supplier
+* information, and generating reports. * @RestController Marks this class as a
+* REST controller. @RequestMapping("/api/supplier/") Specifies the base URL
+* path for all endpoints in this controller.
+* 
+* @Slf4j A Lombok annotation to automatically create a SLF4J logger field.
+*/
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/supplier/")
 @Slf4j // Lombok annotation to automatically create a logger field named 'log'.
 public class SupplierManagementController {
-
+ 
 	@Autowired
 	SupplierService service;
-
+ 
 	/**
 	 * Endpoint to add a new supplier.
 	 *
@@ -51,7 +56,7 @@ public class SupplierManagementController {
 		log.info("Successfully added supplier. Response: {}", result);
 		return result;
 	}
-
+ 
 	/**
 	 * Endpoint to retrieve supplier information by ID.
 	 *
@@ -59,14 +64,21 @@ public class SupplierManagementController {
 	 * @return The {@link Supplier} object if found.
 	 * @throws SupplierNotFound if no supplier exists with the given ID.
 	 */
-	@GetMapping("supplierInfoById/{id}") // http://localhost:1111/supplier/supplierInfoById/1
+	@GetMapping("supplierInfoById/{id}") // http://localhost:8082/supplier/supplierInfoById/1
 	public Supplier getSupplierInfo(@PathVariable("id") int supplierId) throws SupplierNotFound {
 		log.info("Received request to get supplier info for ID: {}", supplierId);
 		Supplier supplier = service.getSupplierInfo(supplierId);
 		log.info("Found supplier with ID {}: {}", supplierId, supplier);
 		return supplier;
 	}
-
+	@GetMapping("viewAllSupplier") // http://localhost:8082/supplier/viewAllSupplier/
+	public List<Supplier> getAllSupplier() throws SupplierNotFound {
+		//log.info("Received request to get supplier info : {}");
+		List<Supplier> supplier = service.getAllSupplier();
+		//log.info("Found supplier with ID {}: );
+		return supplier;
+	}
+ 
 	/**
 	 * Endpoint to generate a supplier report based on a date range.
 	 *
@@ -88,5 +100,19 @@ public class SupplierManagementController {
 		}
 		log.info("Generated report with {} entries.", reports.size());
 		return reports;
+	}
+	@PutMapping("updateSupplier/{id}") // http://localhost:1111/supplier/add
+	public Optional<Supplier> updateSupplierInfo(@Valid @PathVariable("id") int id,@RequestBody Supplier updatedSupplier) throws SupplierNotFound {
+		log.info("Received request to add a new supplier: {}");
+		Optional<Supplier> result = service.updateSupplierInfo(id,updatedSupplier);
+		log.info("Successfully added supplier. Response: {}", result);
+		return result;
+	}
+	@DeleteMapping("deleteSupplier/{id}") // http://localhost:1111/supplier/add
+	public String deleteSupplierInfo(@Valid @PathVariable("id") int id) throws SupplierNotFound {
+		log.info("Received request to add a new supplier: {}");
+		String result = service.deleteSupplierInfo(id);
+		log.info("Successfully added supplier. Response: {}", result);
+		return result;
 	}
 }

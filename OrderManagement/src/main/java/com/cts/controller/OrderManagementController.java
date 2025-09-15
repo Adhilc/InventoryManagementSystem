@@ -97,4 +97,9 @@ public class OrderManagementController {
 		
 		return service.updateStatus(orderId,status);
 	}
+	
+	@GetMapping("/getAll")
+	public ResponseEntity<List<Order>> getAllOrders() {
+		return service.getAllOrders();
+	}
 }
