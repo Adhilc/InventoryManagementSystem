@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 * 
 * @Slf4j A Lombok annotation to automatically create a SLF4J logger field.
 */
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/supplier/")
 @Slf4j // Lombok annotation to automatically create a logger field named 'log'.
